@@ -19,8 +19,10 @@ Route::middleware('auth')->group(function () {
 });
 
 //Admin routes
-Route::middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth'
+// ,'role:admin'
+])->group(function () {
+    Route::resource('tickets', TicketController::class);
 });
-Route::resource('tickets', TicketController::class);
 
 require __DIR__.'/auth.php';
