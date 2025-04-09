@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->string('ticket_number')->unique(); // Ticket numbers are unique
 
             // Foreign key: Allow null value when a user is deleted
             $table->foreignId('user_id')
@@ -20,10 +21,12 @@ return new class extends Migration
                 ->constrained()
                 ->onDelete('set null');
 
-            // Ticket tier: gold, platinum, diamond
-            $table->enum('tier', ['gold', 'platinum', 'diamond']);
-            
-            $table->decimal('price', 10, 2); // Price of the ticket
+            // Reference to the tire tier
+            $table->unsignedBigInteger('tires_id');
+            $table->foreign('tires_id')
+                ->references('id')
+                ->on('tires')
+                ->onDelete('cascade');
 
             // Status can be used to denote if ticket is active, used, etc.
             $table->string('status')->default('active');

@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BannerController;
+use App\Http\Controllers\TiresController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -20,10 +22,12 @@ Route::middleware('auth')->group(function () {
 });
 
 //Admin routes
-Route::middleware(['auth'
+Route::prefix('admin')->name('admin.')->middleware(['auth'
 // ,'role:admin'
 ])->group(function () {
+    Route::resource('tires', TiresController::class);
     Route::resource('tickets', TicketController::class);
+    Route::resource('banners', BannerController::class);
 });
 
 Route::get('/users', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('users.index');

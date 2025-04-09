@@ -16,8 +16,8 @@ class Ticket extends Model
      */
     protected $fillable = [
         'user_id',
-        'tier',
-        'price',
+        'ticket_number',
+        'tires_id',
         'status',
     ];
 
@@ -27,5 +27,13 @@ class Ticket extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * A ticket belongs to a tire tier.
+     */
+    public function tire()
+    {
+        return $this->belongsTo(\App\Models\Tires::class, 'tires_id');
     }
 }
