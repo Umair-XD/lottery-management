@@ -4,8 +4,32 @@
             {{ __('Home') }}
         </h2>
     </x-slot> --}}
+    <div class="flex justify-between items-center px-5 h-24">
+        <div class="logo flex items-center justify-center ">
 
-    <div class="py-12">
+            <a href=""><x-application-logo class="w-32  fill-current text-gray-500" /></a>
+
+            <div class="nav-links [&>*]:font-bold [&>*]:px-3 text-lg">
+                <a href="#" class="active:border-b-2 active:border-black active:pb-3">Games</a>
+                <span class="!font-thin text-gray-500 ">|</span>
+
+                <a href="" class="active:border-b-2 active:border-black active:pb-3">Results</a>
+                <span class="!font-thin text-gray-500 ">|</span>
+
+                <a href="" class="active:border-b-2 active:border-black active:pb-3">Giving Back</a>
+                <span class="!font-thin text-gray-500 ">|</span>
+
+                <a href="" class="active:border-b-2 active:border-black active:pb-3">Loayalty</a>
+                <span class="!font-thin text-gray-500 ">|</span>
+
+                <a href="" class="active:border-b-2 active:border-black active:pb-3">Promotions</a>
+            </div>
+        </div>
+
+        <button class="bg-[#fcc640] font-bold px-5 py-2 rounded-lg">Sign In / Register</button>
+    </div>
+
+    <div class="py-12 bg-red-400">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-[#2bacd5]  overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 ">
