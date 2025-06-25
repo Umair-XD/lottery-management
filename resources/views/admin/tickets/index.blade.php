@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Tickets') }}
             </h2>
-            <button id="create-ticket-btn" class="bg-[#2bacd5] hover:bg-[#3b8fa8] text-white font-bold py-2 px-4 rounded">
+            <button id="create-ticket-btn" class="bg-[#223871] hover:bg-[#3b8fa8] text-white font-bold py-2 px-4 rounded">
                 Create New Ticket
             </button>
         </div>

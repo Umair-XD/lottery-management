@@ -31,5 +31,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'
 });
 
 Route::get('/users', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('users.index');
+Route::get('/giving', [UserController::class, 'giving'])->middleware(['auth', 'verified'])->name('users.giving');
+Route::get('/faq', [UserController::class, 'faq'])->middleware(['auth', 'verified'])->name('users.faq');
 
 require __DIR__.'/auth.php';

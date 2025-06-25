@@ -10,4 +10,12 @@ class UserController extends Controller
     {
         return view('users.index');
     }
+    public function giving()
+    {
+        return view('users.giving');
+    }
+    public function faq()
+    {
+        return view('users.faq');
+    }
 }

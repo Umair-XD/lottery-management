@@ -28,7 +28,7 @@ $(document).ready(function () {
                 let html = `
                 <div class="overflow-x-auto px-4 py-2">
                   <table class="min-w-full border border-gray-300 rounded-lg shadow-md divide-y divide-gray-300">
-                    <thead class="bg-[#2bacd5] text-white">
+                    <thead class="bg-[#223871] text-white">
                       <tr>
                         <th scope="col" class="w-1/12 px-6 py-3 text-center text-xs font-bold tracking-wide uppercase">ID</th>
                         <th scope="col" class="w-3/12 px-6 py-3 text-center text-xs font-bold tracking-wide uppercase">Tier Name</th>
