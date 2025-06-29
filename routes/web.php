@@ -7,9 +7,12 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\TiresController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/', [UserController::class, 'index'])->name('users.index');
+Route::get('/giving', [UserController::class, 'giving'])->name('users.giving');
+Route::get('/faq', [UserController::class, 'faq'])->name('users.faq');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -29,9 +32,5 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'
     Route::resource('tickets', TicketController::class);
     Route::resource('banners', BannerController::class);
 });
-
-Route::get('/users', [UserController::class, 'index'])->middleware(['auth', 'verified'])->name('users.index');
-Route::get('/giving', [UserController::class, 'giving'])->middleware(['auth', 'verified'])->name('users.giving');
-Route::get('/faq', [UserController::class, 'faq'])->middleware(['auth', 'verified'])->name('users.faq');
 
 require __DIR__.'/auth.php';
