@@ -35,27 +35,113 @@
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-white">
         {{-- @include('layouts.navigation') --}}
-        <div class="nav flex justify-between items-center px-14 py-3">
-            <div class="logo flex items-center justify-center ">
-                <a href="{{ route('users.index') }}"><x-application-logo class="w-24  fill-current text-gray-500" /></a>
-            </div>
+        <div class="nav relative flex justify-between items-center px-4 lg:px-14 py-3 bg-white">
+            <!-- Hamburger (mobile only) -->
+            <button id="menu-btn" class="md:hidden w-20 p-2 text-gray-600 hover:text-black focus:outline-none"
+                aria-label="Toggle menu">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
 
-            <div class="flex justify-between items-center space-x-28">
-                <div class="nav-links [&>*]:font-medium [&>*]:border-l-2 [&>*]:px-5 text-base">
-                    <a href="" class="active:border-b-2 active:border-black active:pb-3">Games</a>
-                    <a href="{{ route('users.giving') }}" :active="request() - > routeIs('users.giving')"
-                        class="active:border-b-2 active:border-black active:pb-3">Giving Back</a>
-                    <a href="{{ route('users.faq') }}" class="active:border-b-2 active:border-black active:pb-3">FAQ's</a>
-                    <a href="" class="active:border-b-2 active:border-black active:pb-3">Game Rules</a>
+            <!-- Logo -->
+            <div class="logo flex items-center justify-center">
+                <a href="{{ route('users.index') }}">
+                    <x-application-logo class="w-20 md:w-24 fill-current text-gray-500" />
+                </a>
+            </div>
+            <a href="{{ route('login') }}"
+                class="md:hidden w-20 text-center bg-[#FDC741] py-2 rounded font-semibold">Sign In</a>
+
+            <!-- Desktop links/buttons -->
+            <div class="hidden md:flex md:items-center space-x-5 lg:space-x-28">
+                <div class="nav-links flex items-center text-base font-medium text-[#808080]">
+                    <a href="{{ route('users.index') }}" @class([
+                        'px-3 py-1',
+                        'text-black border-b-2 border-black' => request()->routeIs('users.index'),
+                    ])>
+                        Games
+                    </a>
+
+                    <span class="h-6 border-l-2 border-black mx-2"></span>
+                    <a href="{{ route('users.giving') }}" @class([
+                        'px-3 py-1',
+                        'text-black border-b-2 border-black' => request()->routeIs('users.giving'),
+                    ])>
+                        Giving Back
+                    </a>
+
+                    <span class="h-6 border-l-2 border-black mx-2"></span>
+                    <a href="{{ route('users.faq') }}" @class([
+                        'px-3 py-1',
+                        'text-black border-b-2 border-black' => request()->routeIs('users.faq'),
+                    ])>
+                        FAQ’s
+                    </a>
+
+                    <span class="h-6 border-l-2 border-black mx-2"></span>
+                    <a href="{{ route('users.rules') }}" @class([
+                        'px-3 py-1',
+                        'text-black border-b-2 border-black' => request()->routeIs('users.rules'),
+                    ])>
+                        Game Rules
+                    </a>
                 </div>
-                <div class="login-btns flex justify-between items-center space-x-3">
-                    <a href="{{ route('login') }}" class="bg-[#FDC741] text-[19px] font-semibold px-6 py-1 rounded-[4px] text">Sign In</a>
+
+                <div class="login-btns flex space-x-3">
+                    <a href="{{ route('login') }}"
+                        class="bg-[#FDC741] lg:text-[19px] font-semibold px-6 py-1 rounded">Sign In</a>
                     <a href="{{ route('register') }}"
-                        class="border border-[#FDC741] text-[19px] text-[#FDC741] font-semibold px-6 py-1 rounded-[4px]">Register</a>
+                        class="border border-[#FDC741] text-[#FDC741] lg:text-[19px] font-semibold px-6 py-1 rounded">Register</a>
                 </div>
             </div>
-        </div>
 
+            <!-- Side-drawer Mobile Menu -->
+            <div id="mobile-menu"
+                class="fixed inset-y-0 left-0 w-64 sm:w-3/4 bg-white p-6
+              transform -translate-x-full transition-transform duration-300 ease-in-out
+              md:hidden z-50 shadow-lg">
+                <!-- Close button -->
+                <div class="flex justify-end mb-8">
+                    <button id="menu-close" class="p-2 text-gray-600 hover:text-black" aria-label="Close menu">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <!-- Links -->
+                <nav class="flex flex-col space-y-4">
+                    <a href="" class="block py-2 font-medium">Games</a>
+                    <a href="{{ route('users.giving') }}" class="block py-2 font-medium">Giving Back</a>
+                    <a href="{{ route('users.faq') }}" class="block py-2 font-medium">FAQ’s</a>
+                    <a href="{{ route('users.rules') }}" class="block py-2 font-medium">Game Rules</a>
+                </nav>
+                <!-- Auth Buttons -->
+                <div class="mt-auto pt-8 space-y-4">
+                    {{-- <a href="{{ route('login') }}"
+                        class="block w-full text-center bg-[#FDC741] py-2 rounded font-semibold">Sign In</a> --}}
+                    <a href="{{ route('register') }}"
+                        class="block w-full text-center border border-[#FDC741] py-2 rounded font-semibold text-[#FDC741]">Register</a>
+                </div>
+            </div>
+            <script>
+                const openBtn = document.getElementById('menu-btn');
+                const closeBtn = document.getElementById('menu-close');
+                const menu = document.getElementById('mobile-menu');
+
+                openBtn.addEventListener('click', () => {
+                    menu.classList.toggle('-translate-x-full');
+                    menu.classList.toggle('translate-x-0');
+                });
+
+                closeBtn.addEventListener('click', () => {
+                    menu.classList.add('-translate-x-full');
+                    menu.classList.remove('translate-x-0');
+                });
+            </script>
+        </div>
+x
         <!-- Page Heading -->
         @isset($header)
             <header class="bg-white shadow">

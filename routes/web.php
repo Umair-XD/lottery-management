@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [UserController::class, 'index'])->name('users.index');
 Route::get('/giving', [UserController::class, 'giving'])->name('users.giving');
 Route::get('/faq', [UserController::class, 'faq'])->name('users.faq');
+Route::get('/rules', [UserController::class, 'rules'])->name('users.rules');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
