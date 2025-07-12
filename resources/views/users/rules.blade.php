@@ -16,8 +16,7 @@
         <div class="content px-28 py-16 mb-10">
             <!-- Intro paragraph -->
             <p class="text-lg mb-8 text-[#3A3A3A]">
-                Lorem ipsum dolor sit amet consectetur. Massa in mollis nunc elit viverra sapien tellus commodo
-                volutpat. Laoreet pharetra mauris turpis nec. Nullam velit odio quam placerat.
+                These rules for Kingdom Draw (“Rules”) set out the various rules and procedures that apply when You enter the Kingdom Draw Game.
             </p>
 
             <!-- Check-item list -->
@@ -28,9 +27,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     <p class="text-base leading-relaxed text-[#3A3A3A]">
-                        Lorem ipsum dolor sit amet consectetur. Massa in mollis nunc elit
-                        viverra sapien tellus commodo volutpat. Laoreet pharetra mauris
-                        turpis nec. Nullam velit odio quam placerat.
+                        Your online account on the Kingdom Draw platform which stores your personal details, purchase history, point balance, and eligibility to participate.
                     </p>
                 </li>
                 <li class="flex items-start">
@@ -39,9 +36,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     <p class="text-base leading-relaxed text-[#3A3A3A]">
-                        Lorem ipsum dolor sit amet consectetur. Massa in mollis nunc elit
-                        viverra sapien tellus commodo volutpat. Laoreet pharetra mauris
-                        turpis nec. Nullam velit odio quam placerat.
+                        Pakistani Rupee, the official currency for all transactions on Kingdom Draw.
                     </p>
                 </li>
                 <li class="flex items-start">
@@ -50,9 +45,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     <p class="text-base leading-relaxed text-[#3A3A3A]">
-                        Lorem ipsum dolor sit amet consectetur. Massa in mollis nunc elit
-                        viverra sapien tellus commodo volutpat. Laoreet pharetra mauris
-                        turpis nec. Nullam velit odio quam placerat.
+                        A registered user of Kingdom Draw who enters the draw by purchasing a ticket.
                     </p>
                 </li>
                 <li class="flex items-start">
@@ -61,9 +54,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     <p class="text-base leading-relaxed text-[#3A3A3A]">
-                        Lorem ipsum dolor sit amet consectetur. Massa in mollis nunc elit
-                        viverra sapien tellus commodo volutpat. Laoreet pharetra mauris
-                        turpis nec. Nullam velit odio quam placerat.
+                        A valid ticket purchase that qualifies you to participate in the draw for a specific product.
                     </p>
                 </li>
                 <li class="flex items-start">
@@ -72,9 +63,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     <p class="text-base leading-relaxed text-[#3A3A3A]">
-                        Lorem ipsum dolor sit amet consectetur. Massa in mollis nunc elit
-                        viverra sapien tellus commodo volutpat. Laoreet pharetra mauris
-                        turpis nec. Nullam velit odio quam placerat.
+                        Non-refundable credits earned by non-winning participants equal to the amount spent (1 PKR = 1 Point), which may be used in future draws.
+                    </p>
+                </li>
+                <li class="flex items-start">
+                    <svg class="flex-shrink-0 h-6 w-6 mt-1 mr-3" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <p class="text-base leading-relaxed text-[#3A3A3A]">
+                        The process of randomly selecting a single winner from the total eligible entries for each product.
                     </p>
                 </li>
             </ul>
