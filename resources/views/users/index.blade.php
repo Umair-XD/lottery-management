@@ -77,8 +77,7 @@
             Our Games
         </h2>
 
-        <div x-data="carousel()" x-init="init();
-        initTimers()" x-ref="viewport"
+        <div x-data="carousel()" x-init="init(); initTimers()" x-ref="viewport"
             class="relative w-full overflow-hidden pt-16" @mousedown.prevent="dragStart" @mousemove.prevent="dragMove"
             @mouseup.prevent="dragEnd" @mouseleave.prevent="dragEnd" @touchstart.prevent="dragStart"
             @touchmove.prevent="dragMove" @touchend.prevent="dragEnd">
@@ -225,13 +224,12 @@
     </div>
 
 
-
     <section id="winning-section" class="px-4 sm:px-6 md:px-8 lg:px-14 xl:px-20">
         <div class="text-center">
             <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] pt-12 font-medium text-center">
                 Winning Members</h2>
             <!-- Use 4 columns on md and above -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10 mt-12 lg:mt-16">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-10 mt-12 lg:mt-16">
                 <!-- Panel 1: Grand Prize (span 1) -->
                 <div
                     class="bg-[#21366F] gap-9 text-white shadow-lg rounded-[30px] p-8 flex flex-col items-center md:col-span-1">

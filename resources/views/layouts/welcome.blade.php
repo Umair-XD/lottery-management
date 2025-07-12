@@ -167,36 +167,49 @@
                 <div class="top py-16">
                     <div class="flex justify-center space-x-6 mb-6">
                         <a href="https://www.youtube.com" target="_blank" class="hover:opacity-75">
-                            <img src="path/to/youtube-icon.png" alt="YouTube" class="w-6 h-6" />
+                            <img src="path/to/youtube-icon.png" alt="YouTube" class="w-5 sm:w-6 md:w-7 lg:w-8" />
                         </a>
                         <a href="https://www.facebook.com" target="_blank" class="hover:opacity-75">
-                            <img src="path/to/facebook-icon.png" alt="Facebook" class="w-6 h-6" />
+                            <img src="path/to/facebook-icon.png" alt="Facebook" class="w-5 sm:w-6 md:w-7 lg:w-8" />
                         </a>
                         <a href="https://www.instagram.com" target="_blank" class="hover:opacity-75">
-                            <img src="path/to/instagram-icon.png" alt="Instagram" class="w-6 h-6" />
+                            <img src="path/to/instagram-icon.png" alt="Instagram" class="w-5 sm:w-6 md:w-7 lg:w-8" />
                         </a>
                         <a href="https://www.tiktok.com" target="_blank" class="hover:opacity-75">
-                            <img src="path/to/tiktok-icon.png" alt="TikTok" class="w-6 h-6" />
+                            <img src="path/to/tiktok-icon.png" alt="TikTok" class="w-5 sm:w-6 md:w-7 lg:w-8" />
                         </a>
                     </div>
+
                     <!-- Navigation Links -->
                     <div class="flex justify-center space-x-4 mb-4">
-                        <a href="#" class="hover:text-gray-300 font-medium text-xl border-l-2 pl-4">About</a>
-                        <a href="#" class="hover:text-gray-300 font-medium text-xl border-l-2 pl-4">Contact</a>
-                        <a href="#" class="hover:text-gray-300 font-medium text-xl border-l-2 pl-4">Privacy
-                            Policy</a>
-                        <a href="#" class="hover:text-gray-300 font-medium text-xl border-l-2 pl-4">Terms of
-                            Service</a>
+                        <a href="#"
+                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
+                            About
+                        </a>
+                        <a href="#"
+                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
+                            Contact
+                        </a>
+                        <a href="#"
+                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
+                            Privacy Policy
+                        </a>
+                        <a href="#"
+                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
+                            Terms of Service
+                        </a>
                     </div>
                 </div>
-                <hr>
+
+                <hr class="border-gray-700" />
+
                 <!-- Copyright -->
-                <p class="text-gray-300 text-sm py-3"> Copyright &copy; 2025 Freelancer Technology Pty Limited (ACN 142
-                    189
-                    765)
+                <p class="text-gray-300 text-xs sm:text-sm md:text-base lg:text-lg py-3">
+                    Copyright &copy; 2025 Freelancer Technology Pty Limited (ACN 142 189 765)
                 </p>
             </div>
         </footer>
+
     </div>
 </body>
 
