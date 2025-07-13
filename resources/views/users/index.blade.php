@@ -4,8 +4,8 @@
             {{ __('Home') }}
         </h2>
     </x-slot> --}}
-
     <div class="Slider overflow-hidden relative">
+        @vite(['resources/css/swiper.css'])
         <div class="swiper-container">
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
@@ -24,30 +24,7 @@
             <div class="swiper-button-next"></div>
             <div class="swiper-button-prev"></div>
         </div>
-        <style>
-            .swiper-pagination {
-                margin-bottom: 25px;
-            }
 
-            /* Inactive pagination bullet: mimic Tailwind's white with opacity */
-            .swiper-pagination-bullet {
-                width: 1rem;
-                height: 1rem;
-                border-radius: 100%;
-                background-color: rgba(255, 255, 255, 0.5) !important;
-            }
-
-            /* Active pagination bullet: pure white */
-            .swiper-pagination-bullet-active {
-                background-color: #fff !important;
-            }
-
-            /* Navigation arrows in white */
-            .swiper-button-next,
-            .swiper-button-prev {
-                color: #fff !important;
-            }
-        </style>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const swiper = new Swiper('.swiper-container', {
@@ -77,7 +54,8 @@
             Our Games
         </h2>
 
-        <div x-data="carousel()" x-init="init(); initTimers()" x-ref="viewport"
+        <div x-data="carousel()" x-init="init();
+        initTimers()" x-ref="viewport"
             class="relative w-full overflow-hidden pt-16" @mousedown.prevent="dragStart" @mousemove.prevent="dragMove"
             @mouseup.prevent="dragEnd" @mouseleave.prevent="dragEnd" @touchstart.prevent="dragStart"
             @touchmove.prevent="dragMove" @touchend.prevent="dragEnd">
@@ -88,7 +66,7 @@
                     <div class="flex-shrink-0 px-1" :style="`width: ${itemWidth}px; margin-right: ${gap}px;`">
                         <div :class="idx === active ? 'scale-100 z-10' : 'scale-90 z-0'"
                             class="bg-white rounded-lg shadow-lg transform transition-transform duration-300">
-                            <div :class="card.bg" class="p-6 text-center text-white rounded-lg">
+                            <div :class="card.bg" class="p-6 text-center text-white rounded-2xl">
                                 <h3 class="text-xl font-bold">PRIZE UP TO</h3>
                                 <h3 class="text-2xl font-bold">AED 1,000,000</h3>
                                 <p class="mt-8 text-xl font-bold">WIN</p>
@@ -129,8 +107,12 @@
         <script>
             function carousel() {
                 return {
-                    active: 1,
+                    active: 0,
                     cards: [{
+                            bg: 'bg-[#62c9d6]',
+                            seconds: 12 * 60 + 55
+                        },
+                        {
                             bg: 'bg-[#0D2657]',
                             seconds: 12 * 60 + 55
                         },
@@ -142,9 +124,12 @@
                             bg: 'bg-[#FDC741]',
                             seconds: 12 * 60 + 55
                         },
+                        {
+                            bg: 'bg-[#216ca2]',
+                            seconds: 12 * 60 + 55
+                        },
                     ],
 
-                    // bumped up width → 360px, tighter gap → 12px
                     itemWidth: 360,
                     gap: 12,
                     viewportWidth: 0,
@@ -155,6 +140,7 @@
 
                     init() {
                         this.viewportWidth = this.$refs.viewport.clientWidth;
+                        this.active = Math.floor(this.cards.length / 2)
                         window.addEventListener('resize', () => {
                             this.viewportWidth = this.$refs.viewport.clientWidth;
                         });
@@ -180,7 +166,8 @@
                     },
                     get translate() {
                         const centerOffset = (this.viewportWidth - this.itemWidth) / 2,
-                            slideOffset = this.active * (this.itemWidth + this.gap),
+                            // slideOffset = this.active * (this.itemWidth + this.gap),
+                            slideOffset = this.active * (this.itemWidth + this.gap) - this.gap,
                             baseX = centerOffset - slideOffset;
                         return this.isDragging ?
                             baseX + this.currentTranslate :
@@ -341,6 +328,210 @@
             });
         </script>
     </section>
+
+
+    <div class="Prizes py-12">
+        <!-- Section Title -->
+        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-medium text-center mb-8">
+            Win All Prizes
+        </h2>
+
+        <!-- Carousel Wrapper -->
+        <div x-data="productCarousel()" x-init="init();
+        initTimers()" x-ref="viewport"
+            class="relative w-full overflow-hidden pt-16" @mousedown.prevent="dragStart" @mousemove.prevent="dragMove"
+            @mouseup.prevent="dragEnd" @mouseleave.prevent="dragEnd" @touchstart.prevent="dragStart"
+            @touchmove.prevent="dragMove" @touchend.prevent="dragEnd">
+            <!-- Slides Container -->
+            <div class="flex transition-transform duration-300 ease-in-out"
+                :style="`transform: translateX(${translate}px)`">
+                <template x-for="(product, idx) in productCards" :key="idx">
+                    <div class="flex-shrink-0 px-1" :style="`width: ${itemWidth}px; margin-right: ${gap}px;`">
+                        <div :class="idx === active ? 'scale-100 z-10' : 'scale-90 z-0'"
+                            class="bg-white rounded-lg shadow-lg transform transition-transform duration-300 overflow-hidden">
+                            <!-- Coloured Header -->
+                            <div :class="product.bg" class="p-6 text-center text-white">
+                                <p class="text-xs sm:text-sm uppercase font-bold tracking-wide">
+                                    PKR 50 Every Sunday
+                                </p>
+                                <p class="mt-2 text-lg sm:text-xl font-bold">
+                                    Grand Prize RS. 1,000,000
+                                </p>
+                                <p class="mt-2 text-xs sm:text-sm uppercase tracking-wide">
+                                    Guaranteed Results
+                                </p>
+
+                                <div class="mt-4 flex justify-center">
+                                    <img :src="product.image" alt="Prize image"
+                                        class="h-48 w-48 object-cover rounded-lg shadow-sm" />
+                                </div>
+
+                                <!-- 4-Box Countdown -->
+                                <div class="mt-4 flex justify-center space-x-2">
+                                    <!-- Days -->
+                                    <div class="flex flex-col items-center border-2 border-white rounded-lg">
+                                        <div class="bg-white px-3 py-2">
+                                            <span class="text-xl sm:text-2xl font-bold text-black"
+                                                x-text="getDays(product.seconds)"></span>
+                                        </div>
+                                        <span class="mt-1 text-xs uppercase">Days</span>
+                                    </div>
+                                    <!-- Hours -->
+                                    <div class="flex flex-col items-center border-2 border-white rounded-lg">
+                                        <div class="bg-white px-3 py-2">
+                                            <span class="text-xl sm:text-2xl font-bold text-black"
+                                                x-text="getHours(product.seconds)"></span>
+                                        </div>
+                                        <span class="mt-1 text-xs uppercase">Hours</span>
+                                    </div>
+                                    <!-- Minutes -->
+                                    <div class="flex flex-col items-center border-2 border-white rounded-lg">
+                                        <div class="bg-white px-3 py-2">
+                                            <span class="text-xl sm:text-2xl font-bold text-black"
+                                                x-text="getMinutes(product.seconds)"></span>
+                                        </div>
+                                        <span class="mt-1 text-xs uppercase">Mins</span>
+                                    </div>
+                                    <!-- Seconds -->
+                                    <div class="flex flex-col items-center border-2 border-white rounded-lg">
+                                        <div class="bg-white px-3 py-2">
+                                            <span class="text-xl sm:text-2xl font-bold text-black"
+                                                x-text="getSeconds(product.seconds)"></span>
+                                        </div>
+                                        <span class="mt-1 text-xs uppercase">Sec</span>
+                                    </div>
+                                </div>
+
+                                <!-- BUY NOW -->
+                                <button
+                                    class="mt-6 bg-white text-red-600 font-bold uppercase text-sm sm:text-base py-2 rounded-full w-full hover:bg-gray-100">
+                                    BUY NOW
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Pagination Lines -->
+            <div class="mt-4 flex justify-center space-x-2">
+                <template x-for="(_, idx) in productCards" :key="idx">
+                    <div @click="active = idx"
+                        :class="idx === active ?
+                            'bg-white w-8 h-1' :
+                            'bg-gray-500 w-4 h-1'"
+                        class="rounded cursor-pointer transition-all duration-300"></div>
+                </template>
+            </div>
+        </div>
+        <script>
+            function productCarousel() {
+                return {
+                    active: 1,
+
+                    // renamed from `cards` to `productCards`
+                    productCards: [{
+                            bg: 'bg-[#E91F1C]',
+                            seconds: 2 * 3600 + 12 * 60 + 55,
+                            image: "{{ asset('assets/products/phone.png') }}"
+                        },
+                        {
+                            bg: 'bg-indigo-600',
+                            seconds: 2 * 3600 + 12 * 60 + 55,
+                            image: "{{ asset('assets/products/led.png') }}"
+                        },
+                        {
+                            bg: 'bg-gray-800',
+                            seconds: 2 * 3600 + 12 * 60 + 55,
+                            image: "{{ asset('assets/products/phone.png') }}"
+                        },
+                    ],
+
+                    itemWidth: 360,
+                    gap: 12,
+                    viewportWidth: 0,
+
+                    isDragging: false,
+                    startX: 0,
+                    currentTranslate: 0,
+
+                    init() {
+                        this.viewportWidth = this.$refs.viewport.clientWidth;
+                        window.addEventListener('resize', () => {
+                            this.viewportWidth = this.$refs.viewport.clientWidth;
+                        });
+                    },
+
+                    initTimers() {
+                        this.productCards.forEach(product => {
+                            product.interval = setInterval(() => {
+                                if (product.seconds > 0) product.seconds--;
+                                else clearInterval(product.interval);
+                            }, 1000);
+                        });
+                    },
+
+                    // Countdown helpers
+                    getDays(sec) {
+                        return Math.floor(sec / 86400);
+                    },
+                    getHours(sec) {
+                        return Math.floor((sec % 86400) / 3600);
+                    },
+                    getMinutes(sec) {
+                        return Math.floor((sec % 3600) / 60);
+                    },
+                    getSeconds(sec) {
+                        return sec % 60;
+                    },
+
+                    // Compute centered translateX + drag offset
+                    get translate() {
+                        const centerOffset = (this.viewportWidth - this.itemWidth) / 2;
+                        const slideOffset = this.active * (this.itemWidth + this.gap);
+                        const baseX = centerOffset - slideOffset;
+                        return this.isDragging ?
+                            baseX + this.currentTranslate :
+                            baseX;
+                    },
+
+                    prev() {
+                        this.active = this.active > 0 ?
+                            this.active - 1 :
+                            this.productCards.length - 1;
+                    },
+                    next() {
+                        this.active = this.active < this.productCards.length - 1 ?
+                            this.active + 1 :
+                            0;
+                    },
+
+                    dragStart(e) {
+                        this.isDragging = true;
+                        this.startX = e.type.startsWith('mouse') ?
+                            e.clientX :
+                            e.touches[0].clientX;
+                        this.currentTranslate = 0;
+                    },
+                    dragMove(e) {
+                        if (!this.isDragging) return;
+                        const clientX = e.type.startsWith('mouse') ?
+                            e.clientX :
+                            e.touches[0].clientX;
+                        this.currentTranslate = clientX - this.startX;
+                    },
+                    dragEnd() {
+                        if (!this.isDragging) return;
+                        this.isDragging = false;
+                        const threshold = this.itemWidth * 0.2;
+                        if (this.currentTranslate < -threshold) this.next();
+                        if (this.currentTranslate > threshold) this.prev();
+                        this.currentTranslate = 0;
+                    },
+                }
+            }
+        </script>
+    </div>
 
 
     <section class="download py-12 sm:py-16 md:py-20 xl:py-24 px-4 sm:px-6 md:px-8 lg:px-14">

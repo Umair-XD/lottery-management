@@ -46,7 +46,7 @@
                     <a href="{{ route('users.giving') }}" :active="request() - > routeIs('users.giving')"
                         class="active:border-b-2 active:border-black active:pb-3">Giving Back</a>
                     <a href="{{ route('users.faq') }}" class="active:border-b-2 active:border-black active:pb-3">FAQ's</a>
-                    <a href="" class="active:border-b-2 active:border-black active:pb-3">Game Rules</a>
+                    <a href="" class="active:border-b-2 active:border-black active:pb-3">Rules</a>
                 </div>
                 <div class="login-btns flex justify-between items-center space-x-3">
                     <a href="{{ route('login') }}" class="bg-[#FDC741] text-[19px] font-semibold px-6 py-1 rounded-[4px] text">Sign In</a>
