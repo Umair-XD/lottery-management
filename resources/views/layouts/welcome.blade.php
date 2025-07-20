@@ -40,143 +40,135 @@
     <div class="min-h-screen bg-white">
         {{-- @include('layouts.navigation') --}}
 
-        <div class="nav-container relative">
-            <div class="nav relative z-50 flex justify-between items-center px-4 lg:px-14 py-3 bg-white shadow">
-                <!-- Hamburger (mobile only) -->
-                <button id="menu-btn"
-                    class="md:hidden flex items-center justify-center w-10 h-10 text-gray-600 hover:text-black focus:outline-none"
-                    aria-label="Toggle menu">
-                    <svg id="icon-open" class="h-6 w-6" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <svg id="icon-close" class="h-6 w-6 hidden" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-
-                <!-- Logo -->
-                <div class="logo flex items-center">
-                    <a href="{{ route('users.index') }}">
-                        <x-application-logo class="w-20 md:w-24 fill-current text-gray-500" />
-                    </a>
-                </div>
-
-                <!-- Mobile “Sign In” -->
-                <a href="{{ route('login') }}"
-                    class="md:hidden text-center bg-[#FDC741] py-2 px-4 rounded font-semibold">
-                    Sign In
-                </a>
-
-                <!-- Desktop Links & Buttons -->
-                <div class="hidden md:flex md:items-center space-x-5 lg:space-x-28">
-                    <div class="nav-links flex items-center text-base font-medium text-[#808080]">
-                        <a href="{{ route('users.index') }}" @class([
-                            'px-3 py-1',
-                            'text-black border-b-2 border-black' => request()->routeIs('users.index'),
-                        ])>
-                            Games
-                        </a>
-                        <span class="h-6 border-l-2 border-black mx-2"></span>
-                        <a href="{{ route('users.giving') }}" @class([
-                            'px-3 py-1',
-                            'text-black border-b-2 border-black' => request()->routeIs('users.giving'),
-                        ])>
-                            Giving Back
-                        </a>
-                        <span class="h-6 border-l-2 border-black mx-2"></span>
-                        <a href="{{ route('users.faq') }}" @class([
-                            'px-3 py-1',
-                            'text-black border-b-2 border-black' => request()->routeIs('users.faq'),
-                        ])>
-                            FAQ’s
-                        </a>
-                        <span class="h-6 border-l-2 border-black mx-2"></span>
-                        <a href="{{ route('users.rules') }}" @class([
-                            'px-3 py-1',
-                            'text-black border-b-2 border-black' => request()->routeIs('users.rules'),
-                        ])>
-                            Rules
-                        </a>
-                    </div>
-
-                    <div class="login-btns flex space-x-3">
-                        <a href="{{ route('login') }}" class="bg-[#FDC741] font-semibold px-6 py-1 rounded">
-                            Sign In
-                        </a>
-                        <a href="{{ route('register') }}"
-                            class="border border-[#FDC741] text-[#FDC741] font-semibold px-6 py-1 rounded">
-                            Register
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MOBILE MENU (z-40 so it’s behind the navbar) -->
-            <div id="mobile-menu"
-                class="absolute inset-x-0 top-full bg-white p-6
-             transform -translate-y-full transition-transform duration-300 ease-in-out
-             md:hidden z-40 shadow-lg">
-                <nav class="flex flex-col space-y-4">
-                    <a href="{{ route('users.index') }}" class="py-2 font-medium">Games</a>
-                    <a href="{{ route('users.giving') }}" class="py-2 font-medium">Giving Back</a>
-                    <a href="{{ route('users.faq') }}" class="py-2 font-medium">FAQ’s</a>
-                    <a href="{{ route('users.rules') }}" class="py-2 font-medium">Rules</a>
-                </nav>
-
-                <div class="mt-auto pt-8 space-y-4">
-                    <a href="{{ route('register') }}"
-                        class="block w-full text-center border border-[#FDC741] py-2 rounded font-semibold text-[#FDC741]">
-                        Register
-                    </a>
-                </div>
-            </div>
-
-            <script>
-                const btn = document.getElementById('menu-btn');
-                const menu = document.getElementById('mobile-menu');
-                const openIcon = document.getElementById('icon-open');
-                const closeIcon = document.getElementById('icon-close');
-
-                function openMenu() {
-                    menu.classList.replace('-translate-y-full', 'translate-y-0');
-                    openIcon.classList.add('hidden');
-                    closeIcon.classList.remove('hidden');
-                }
-
-                function closeMenu() {
-                    menu.classList.replace('translate-y-0', '-translate-y-full');
-                    openIcon.classList.remove('hidden');
-                    closeIcon.classList.add('hidden');
-                }
-
-                btn.addEventListener('click', e => {
-                    e.stopPropagation();
-                    menu.classList.contains('-translate-y-full') ? openMenu() : closeMenu();
-                });
-
-                document.addEventListener('click', e => {
-                    if (
-                        menu.classList.contains('translate-y-0') &&
-                        !menu.contains(e.target) &&
-                        !btn.contains(e.target)
-                    ) {
-                        closeMenu();
-                    }
-                });
-            </script>
-        </div>
-
-
         <!-- Page Heading -->
-        @isset($header)
+        {{-- @isset($header)
             <header class="bg-white shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>
             </header>
-        @endisset
+        @endisset --}}
+
+        {{-- 1) STICKY NAVBAR --}}
+        <nav class="sticky top-0 z-50 bg-white shadow flex items-center justify-between px-4 lg:px-14 py-2">
+            <!-- Hamburger (mobile only) -->
+            <button id="menu-btn"
+                class="md:hidden flex items-center justify-center w-10 h-10 text-gray-600 hover:text-black focus:outline-none"
+                aria-label="Toggle menu">
+                <svg id="icon-open" class="h-6 w-6" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg id="icon-close" class="h-6 w-6 hidden" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+
+            <!-- Logo -->
+            <div class="logo flex items-center">
+                <a href="{{ route('users.index') }}">
+                    <x-application-logo class="w-20 md:w-24 fill-current text-gray-500" />
+                </a>
+            </div>
+
+            <!-- Mobile “Sign In” -->
+            <a href="{{ route('login') }}" class="md:hidden text-center bg-[#FDC741] py-2 px-4 rounded font-semibold">
+                Sign In
+            </a>
+
+            <!-- Desktop Links & Buttons -->
+            <div class="hidden md:flex md:items-center space-x-5 lg:space-x-28">
+                <div class="nav-links flex items-center text-base font-medium text-[#808080]">
+                    <a href="{{ route('users.index') }}" @class([
+                        'px-3 py-1 hover:text-black',
+                        'text-black border-b-2 border-black' => request()->routeIs('users.index'),
+                    ])>
+                        Games
+                    </a>
+                    <span class="h-6 border-l-2 border-black mx-2"></span>
+                    <a href="{{ route('users.giving') }}" @class([
+                        'px-3 py-1  hover:text-black',
+                        'text-black border-b-2 border-black' => request()->routeIs('users.giving'),
+                    ])>
+                        Giving Back
+                    </a>
+                    <span class="h-6 border-l-2 border-black mx-2"></span>
+                    <a href="{{ route('users.faq') }}" @class([
+                        'px-3 py-1 hover:text-black',
+                        'text-black border-b-2 border-black' => request()->routeIs('users.faq'),
+                    ])>
+                        FAQ’s
+                    </a>
+                    <span class="h-6 border-l-2 border-black mx-2"></span>
+                    <a href="{{ route('users.rules') }}" @class([
+                        'px-3 py-1 hover:text-black',
+                        'text-black border-b-2 border-black' => request()->routeIs('users.rules'),
+                    ])>
+                        Rules
+                    </a>
+                </div>
+
+                <div class="login-btns flex space-x-3">
+                    <a href="{{ route('login') }}" class="bg-[#FDC741] font-semibold px-6 py-1 rounded">
+                        Sign In
+                    </a>
+                    <a href="{{ route('register') }}"
+                        class="border border-[#FDC741] text-[#FDC741] font-semibold px-6 py-1 rounded">
+                        Register
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        {{-- 2) MOBILE MENU --}}
+        <div id="mobile-menu"
+            class="absolute inset-x-0 top-16 bg-white p-6 transform -translate-y-full transition-transform duration-300 ease-in-out md:hidden z-40 shadow-lg">
+            <nav class="flex flex-col space-y-4">
+                <a href="{{ route('users.index') }}" class="py-2 font-medium">Games</a>
+                <a href="{{ route('users.giving') }}" class="py-2 font-medium">Giving Back</a>
+                <a href="{{ route('users.faq') }}" class="py-2 font-medium">FAQ’s</a>
+                <a href="{{ route('users.rules') }}" class="py-2 font-medium">Rules</a>
+            </nav>
+            <div class="mt-8">
+                <a href="{{ route('register') }}"
+                    class="block w-full text-center border border-[#FDC741] py-2 rounded font-semibold text-[#FDC741]">
+                    Register
+                </a>
+            </div>
+        </div>
+
+        {{-- 4) TOGGLE SCRIPT --}}
+        <script>
+            const btn = document.getElementById('menu-btn');
+            const menu = document.getElementById('mobile-menu');
+            const openIcon = document.getElementById('icon-open');
+            const closeIcon = document.getElementById('icon-close');
+
+            btn.addEventListener('click', e => {
+                e.stopPropagation();
+                if (menu.classList.contains('-translate-y-full')) {
+                    menu.classList.replace('-translate-y-full', 'translate-y-0');
+                    openIcon.classList.add('hidden');
+                    closeIcon.classList.remove('hidden');
+                } else {
+                    menu.classList.replace('translate-y-0', '-translate-y-full');
+                    openIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                }
+            });
+
+            document.addEventListener('click', e => {
+                if (
+                    menu.classList.contains('translate-y-0') &&
+                    !menu.contains(e.target) &&
+                    !btn.contains(e.target)
+                ) {
+                    menu.classList.replace('translate-y-0', '-translate-y-full');
+                    openIcon.classList.remove('hidden');
+                    closeIcon.classList.add('hidden');
+                }
+            });
+        </script>
+
 
         <!-- Page Content -->
         <main>
@@ -187,9 +179,9 @@
         <footer class="footer bg-[#0C0E34] text-white">
             <div class="mx-auto text-center">
                 <!-- Social Media Icons -->
-                <div class="top py-16">
+                <div class="top py-8 sm:py-16 px-3">
                     <div class="Logos flex justify-center space-x-6 mb-6">
-                        <a href="https://www.youtube.com" target="_blank" class="hover:opacity-75">
+                        <a href="http://www.youtube.com/@KingdomDraw" target="_blank" class="hover:opacity-75">
                             <svg width="46" height="46" class="w-5 sm:w-6 md:w-7 lg:w-8" viewBox="0 0 46 46"
                                 fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -203,7 +195,7 @@
                             </svg>
 
                         </a>
-                        <a href="https://www.facebook.com" target="_blank" class="hover:opacity-75">
+                        <a href="http://facebook.com/kingdomsdraw" target="_blank" class="hover:opacity-75">
                             <svg width="46" height="46" class="w-5 sm:w-6 md:w-7 lg:w-8" viewBox="0 0 46 46"
                                 fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -212,7 +204,7 @@
                                     stroke-linejoin="round" />
                             </svg>
                         </a>
-                        <a href="https://www.instagram.com" target="_blank" class="hover:opacity-75">
+                        <a href="https://www.instagram.com/kingdomsdraw" target="_blank" class="hover:opacity-75">
                             <svg width="46" height="46" class="w-5 sm:w-6 md:w-7 lg:w-8" viewBox="0 0 46 46"
                                 fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -226,7 +218,8 @@
                                     stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </a>
-                        <a href="https://www.tiktok.com" target="_blank" class="hover:opacity-75">
+                        <a href="https://www.tiktok.com/@kingdomsdrawofficial" target="_blank"
+                            class="hover:opacity-75">
                             <svg width="46" height="46" class="w-5 sm:w-6 md:w-7 lg:w-8" viewBox="0 0 46 46"
                                 fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path
@@ -238,22 +231,34 @@
                     </div>
 
                     <!-- Navigation Links -->
-                    <div class="Links flex justify-center items-center space-x-4 mb-4">
-                        <a href="#"
-                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
-                            About Us
-                        </a>
+                    <div class="Links flex flex-wrap justify-center items-center space-x-4 mb-4">
                         <a href="#"
                             class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
                             Contact Us
                         </a>
                         <a href="#"
                             class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
-                            Referral
+                            Privacy Policy
                         </a>
                         <a href="#"
                             class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
+                            About Us
+                        </a>
+                        <a href="#"
+                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
+                            Terms & Conditions
+                        </a>
+                        <a href="{{ route('users.faq') }}"
+                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
+                            FAQ's
+                        </a>
+                        <a href="{{ route('users.rules') }}"
+                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
                             Rules
+                        </a>
+                        <a href="{{ route('users.giving') }}"
+                            class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
+                            Giving Back
                         </a>
                     </div>
                 </div>

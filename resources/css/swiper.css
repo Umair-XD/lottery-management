@@ -1,7 +1,6 @@
-
 /* Container pagination margin */
 .swiper-pagination {
-    margin-bottom: 25px;
+    margin-bottom: 5px;
 }
 
 /* Base (mobile) pagination bullets */
@@ -20,6 +19,9 @@
     .swiper-pagination-bullet {
         width: 1rem;
         height: 1rem;
+    }
+    .swiper-pagination {
+        margin-bottom: 25px;
     }
 }
 

@@ -49,21 +49,21 @@
     </div>
 
 
-    <div class="Tickets py-12">
-        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-medium text-center">
+    <div class="Tickets py-8 sm:py-12">
+        <h2 class="text-3xl md:text-4xl lg:text-[45px] font-medium text-center">
             Our Games
         </h2>
 
         <div x-data="carousel()" x-init="init();
         initTimers()" x-ref="viewport"
-            class="relative w-full overflow-hidden pt-16" @mousedown.prevent="dragStart" @mousemove.prevent="dragMove"
-            @mouseup.prevent="dragEnd" @mouseleave.prevent="dragEnd" @touchstart.prevent="dragStart"
-            @touchmove.prevent="dragMove" @touchend.prevent="dragEnd">
+            class="relative w-full overflow-hidden pt-8 sm:pt-16" @mousedown.prevent="dragStart"
+            @mousemove.prevent="dragMove" @mouseup.prevent="dragEnd" @mouseleave.prevent="dragEnd"
+            @touchstart="dragStart($event)" @touchmove="dragMove($event)" @touchend="dragEnd">
+
             <div class="flex transition-transform duration-300 ease-in-out"
                 :style="`transform: translateX(${translate}px)`">
                 <template x-for="(card, idx) in cards" :key="idx">
-
-                    <div class="flex-shrink-0 px-1" :style="`width: ${itemWidth}px; margin-right: ${gap}px;`">
+                    <div class="flex-shrink-0" :style="`width: ${itemWidth}px; margin-right: ${gap}px;`">
                         <div :class="idx === active ? 'scale-100 z-10' : 'scale-90 z-0'"
                             class="bg-white rounded-lg shadow-lg transform transition-transform duration-300">
                             <div :class="card.bg" class="p-6 text-center text-white rounded-2xl">
@@ -72,27 +72,24 @@
                                 <p class="mt-8 text-xl font-bold">WIN</p>
                                 <p class="mt-2 text-3xl font-bold">50X</p>
                                 <p class="mt-2 text-2xl font-bold">YOUR ENTRY VALUE</p>
+
                                 <div class="mt-4 flex justify-center items-end space-x-4">
-                                    <!-- Minutes Box -->
                                     <div class="flex flex-col items-center border-white border-2 rounded-lg">
                                         <div class="bg-white rounded px-4 py-2">
                                             <span x-text="getMinutes(card.seconds)"
-                                                class="text-3xl font-bold text-black">
-                                            </span>
+                                                class="text-3xl font-bold text-black"></span>
                                         </div>
                                         <span class="mt-1 text-xs uppercase">Mins</span>
                                     </div>
-
-                                    <!-- Seconds Box -->
                                     <div class="flex flex-col items-center border-white border-2 rounded-lg">
                                         <div class="bg-white rounded px-4 py-2">
                                             <span x-text="getSeconds(card.seconds)"
-                                                class="text-3xl font-bold text-black">
-                                            </span>
+                                                class="text-3xl font-bold text-black"></span>
                                         </div>
                                         <span class="mt-1 text-xs uppercase">Sec</span>
                                     </div>
                                 </div>
+
                                 <button
                                     class="bg-white text-red-600 rounded-full text-xl font-bold py-3 px-5 mt-10 uppercase tracking-wide hover:bg-gray-100">
                                     BUY NOW
@@ -100,6 +97,17 @@
                             </div>
                         </div>
                     </div>
+                </template>
+            </div>
+
+            <div class="mt-7 flex justify-center space-x-2">
+                <template x-for="(card, idx) in cards" :key="idx">
+                    <div @click="active = idx"
+                        :class="[
+                            idx === active ? 'w-20 h-1' : 'w-8 h-1',
+                            card.bg
+                        ]"
+                        class="rounded cursor-pointer transition-all duration-300"></div>
                 </template>
             </div>
         </div>
@@ -131,20 +139,33 @@
                     ],
 
                     itemWidth: 360,
-                    gap: 12,
+                    gap: 10,
                     viewportWidth: 0,
 
                     isDragging: false,
                     startX: 0,
+                    startY: 0,
                     currentTranslate: 0,
 
                     init() {
                         this.viewportWidth = this.$refs.viewport.clientWidth;
-                        this.active = Math.floor(this.cards.length / 2)
+                        this.active = Math.floor(this.cards.length / 2);
+                        this._updateSizes()
                         window.addEventListener('resize', () => {
-                            this.viewportWidth = this.$refs.viewport.clientWidth;
-                        });
+                            this._updateSizes()
+                        })
                     },
+
+                    _updateSizes() {
+                        this.viewportWidth = this.$refs.viewport.clientWidth
+
+                        if (this.viewportWidth < 640) {
+                            this.itemWidth = 300
+                        } else {
+                            this.itemWidth = 360
+                        }
+                    },
+
                     initTimers() {
                         this.cards.forEach(card => {
                             card.interval = setInterval(() => {
@@ -153,50 +174,62 @@
                             }, 1000);
                         });
                     },
-                    formatTime(sec) {
-                        const m = Math.floor(sec / 60),
-                            s = sec % 60;
-                        return `${m}:${String(s).padStart(2,'0')}`;
-                    },
+
                     getMinutes(sec) {
                         return Math.floor(sec / 60);
                     },
                     getSeconds(sec) {
                         return sec % 60;
                     },
+
                     get translate() {
-                        const centerOffset = (this.viewportWidth - this.itemWidth) / 2,
-                            // slideOffset = this.active * (this.itemWidth + this.gap),
-                            slideOffset = this.active * (this.itemWidth + this.gap) - this.gap,
-                            baseX = centerOffset - slideOffset;
-                        return this.isDragging ?
-                            baseX + this.currentTranslate :
-                            baseX;
+                        const centerOffset = (this.viewportWidth - this.itemWidth) / 2;
+                        const slideOffset = this.active * (this.itemWidth + this.gap);
+                        const baseX = centerOffset - slideOffset;
+                        return this.isDragging ? baseX + this.currentTranslate : baseX;
                     },
+
                     prev() {
-                        this.active = this.active > 0 ?
-                            this.active - 1 :
-                            this.cards.length - 1;
+                        this.active = this.active > 0 ? this.active - 1 : this.cards.length - 1;
                     },
+
                     next() {
-                        this.active = this.active < this.cards.length - 1 ?
-                            this.active + 1 :
-                            0;
+                        this.active = this.active < this.cards.length - 1 ? this.active + 1 : 0;
                     },
+
                     dragStart(e) {
                         this.isDragging = true;
-                        this.startX = e.type.startsWith('mouse') ?
-                            e.clientX :
-                            e.touches[0].clientX;
+                        if (e.type.startsWith('mouse')) {
+                            this.startX = e.clientX;
+                            this.startY = e.clientY;
+                        } else {
+                            this.startX = e.touches[0].clientX;
+                            this.startY = e.touches[0].clientY;
+                        }
                         this.currentTranslate = 0;
                     },
+
                     dragMove(e) {
                         if (!this.isDragging) return;
-                        const clientX = e.type.startsWith('mouse') ?
-                            e.clientX :
-                            e.touches[0].clientX;
-                        this.currentTranslate = clientX - this.startX;
+                        let clientX, clientY;
+                        if (e.type.startsWith('mouse')) {
+                            clientX = e.clientX;
+                            clientY = e.clientY;
+                        } else {
+                            clientX = e.touches[0].clientX;
+                            clientY = e.touches[0].clientY;
+                        }
+
+                        const deltaX = clientX - this.startX;
+                        const deltaY = clientY - this.startY;
+
+                        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                            e.preventDefault();
+                        }
+
+                        this.currentTranslate = deltaX;
                     },
+
                     dragEnd() {
                         if (!this.isDragging) return;
                         this.isDragging = false;
@@ -211,9 +244,9 @@
     </div>
 
 
-    <section id="winning-section" class="px-4 sm:px-6 md:px-8 lg:px-14 xl:px-20">
+    <section id="winning-section" class="px-4 sm:px-6 md:px-8 lg:px-14 xl:px-20 py-8 sm:py-12">
         <div class="text-center">
-            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] pt-12 font-medium text-center">
+            <h2 class="text-3xl md:text-4xl lg:text-[45px] font-medium text-center">
                 Winning Members</h2>
             <!-- Use 4 columns on md and above -->
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-10 mt-12 lg:mt-16">
@@ -330,26 +363,23 @@
     </section>
 
 
-    <div class="Prizes py-12">
-        <!-- Section Title -->
-        <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-medium text-center mb-8">
+    <div class="Prizes py-8 sm:py-12">
+        <h2 class="text-3xl md:text-4xl lg:text-[45px] font-medium text-center">
             Win All Prizes
         </h2>
 
-        <!-- Carousel Wrapper -->
         <div x-data="productCarousel()" x-init="init();
         initTimers()" x-ref="viewport"
-            class="relative w-full overflow-hidden pt-16" @mousedown.prevent="dragStart" @mousemove.prevent="dragMove"
-            @mouseup.prevent="dragEnd" @mouseleave.prevent="dragEnd" @touchstart.prevent="dragStart"
-            @touchmove.prevent="dragMove" @touchend.prevent="dragEnd">
-            <!-- Slides Container -->
+            class="relative w-full overflow-hidden pt-8 sm:pt-16" @mousedown.prevent="dragStart"
+            @mousemove.prevent="dragMove" @mouseup.prevent="dragEnd" @mouseleave.prevent="dragEnd"
+            @touchstart="dragStart($event)" @touchmove="dragMove($event)" @touchend="dragEnd">
+
             <div class="flex transition-transform duration-300 ease-in-out"
                 :style="`transform: translateX(${translate}px)`">
                 <template x-for="(product, idx) in productCards" :key="idx">
-                    <div class="flex-shrink-0 px-1" :style="`width: ${itemWidth}px; margin-right: ${gap}px;`">
+                    <div class="flex-shrink-0" :style="`width: ${itemWidth}px; margin-right: ${gap}px;`">
                         <div :class="idx === active ? 'scale-100 z-10' : 'scale-90 z-0'"
                             class="bg-white rounded-lg shadow-lg transform transition-transform duration-300 overflow-hidden">
-                            <!-- Coloured Header -->
                             <div :class="product.bg" class="p-6 text-center text-white">
                                 <p class="text-xs sm:text-sm uppercase font-bold tracking-wide">
                                     PKR 50 Every Sunday
@@ -366,9 +396,7 @@
                                         class="h-48 w-48 object-cover rounded-lg shadow-sm" />
                                 </div>
 
-                                <!-- 4-Box Countdown -->
                                 <div class="mt-4 flex justify-center space-x-2">
-                                    <!-- Days -->
                                     <div class="flex flex-col items-center border-2 border-white rounded-lg">
                                         <div class="bg-white px-3 py-2">
                                             <span class="text-xl sm:text-2xl font-bold text-black"
@@ -376,7 +404,6 @@
                                         </div>
                                         <span class="mt-1 text-xs uppercase">Days</span>
                                     </div>
-                                    <!-- Hours -->
                                     <div class="flex flex-col items-center border-2 border-white rounded-lg">
                                         <div class="bg-white px-3 py-2">
                                             <span class="text-xl sm:text-2xl font-bold text-black"
@@ -384,7 +411,6 @@
                                         </div>
                                         <span class="mt-1 text-xs uppercase">Hours</span>
                                     </div>
-                                    <!-- Minutes -->
                                     <div class="flex flex-col items-center border-2 border-white rounded-lg">
                                         <div class="bg-white px-3 py-2">
                                             <span class="text-xl sm:text-2xl font-bold text-black"
@@ -392,7 +418,6 @@
                                         </div>
                                         <span class="mt-1 text-xs uppercase">Mins</span>
                                     </div>
-                                    <!-- Seconds -->
                                     <div class="flex flex-col items-center border-2 border-white rounded-lg">
                                         <div class="bg-white px-3 py-2">
                                             <span class="text-xl sm:text-2xl font-bold text-black"
@@ -402,7 +427,6 @@
                                     </div>
                                 </div>
 
-                                <!-- BUY NOW -->
                                 <button
                                     class="mt-6 bg-white text-red-600 font-bold uppercase text-sm sm:text-base py-2 rounded-full w-full hover:bg-gray-100">
                                     BUY NOW
@@ -413,23 +437,22 @@
                 </template>
             </div>
 
-            <!-- Pagination Lines -->
-            <div class="mt-4 flex justify-center space-x-2">
-                <template x-for="(_, idx) in productCards" :key="idx">
+            <div class="mt-7 flex justify-center space-x-2">
+                <template x-for="(product, idx) in productCards" :key="idx">
                     <div @click="active = idx"
-                        :class="idx === active ?
-                            'bg-white w-8 h-1' :
-                            'bg-gray-500 w-4 h-1'"
+                        :class="[
+                            idx === active ? 'w-20 h-1' : 'w-8 h-1',
+                            product.bg
+                        ]"
                         class="rounded cursor-pointer transition-all duration-300"></div>
                 </template>
             </div>
         </div>
+
         <script>
             function productCarousel() {
                 return {
                     active: 1,
-
-                    // renamed from `cards` to `productCards`
                     productCards: [{
                             bg: 'bg-[#E91F1C]',
                             seconds: 2 * 3600 + 12 * 60 + 55,
@@ -453,13 +476,23 @@
 
                     isDragging: false,
                     startX: 0,
+                    startY: 0,
                     currentTranslate: 0,
 
                     init() {
-                        this.viewportWidth = this.$refs.viewport.clientWidth;
+                        this._updateSizes()
                         window.addEventListener('resize', () => {
-                            this.viewportWidth = this.$refs.viewport.clientWidth;
-                        });
+                            this._updateSizes()
+                        })
+                    },
+
+                    _updateSizes() {
+                        this.viewportWidth = this.$refs.viewport.clientWidth
+                        if (this.viewportWidth < 640) {
+                            this.itemWidth = 300
+                        } else {
+                            this.itemWidth = 360
+                        }
                     },
 
                     initTimers() {
@@ -471,7 +504,6 @@
                         });
                     },
 
-                    // Countdown helpers
                     getDays(sec) {
                         return Math.floor(sec / 86400);
                     },
@@ -485,44 +517,57 @@
                         return sec % 60;
                     },
 
-                    // Compute centered translateX + drag offset
                     get translate() {
                         const centerOffset = (this.viewportWidth - this.itemWidth) / 2;
                         const slideOffset = this.active * (this.itemWidth + this.gap);
                         const baseX = centerOffset - slideOffset;
-                        return this.isDragging ?
-                            baseX + this.currentTranslate :
-                            baseX;
+                        return this.isDragging ? baseX + this.currentTranslate : baseX;
                     },
 
                     prev() {
-                        this.active = this.active > 0 ?
-                            this.active - 1 :
-                            this.productCards.length - 1;
+                        this.active = this.active > 0 ? this.active - 1 : this.productCards.length - 1;
                     },
                     next() {
-                        this.active = this.active < this.productCards.length - 1 ?
-                            this.active + 1 :
-                            0;
+                        this.active = this.active < this.productCards.length - 1 ? this.active + 1 : 0;
                     },
 
                     dragStart(e) {
                         this.isDragging = true;
-                        this.startX = e.type.startsWith('mouse') ?
-                            e.clientX :
-                            e.touches[0].clientX;
+                        if (e.type.startsWith('mouse')) {
+                            this.startX = e.clientX;
+                            this.startY = e.clientY;
+                        } else {
+                            this.startX = e.touches[0].clientX;
+                            this.startY = e.touches[0].clientY;
+                        }
                         this.currentTranslate = 0;
                     },
+
                     dragMove(e) {
                         if (!this.isDragging) return;
-                        const clientX = e.type.startsWith('mouse') ?
-                            e.clientX :
-                            e.touches[0].clientX;
-                        this.currentTranslate = clientX - this.startX;
+                        let clientX, clientY;
+                        if (e.type.startsWith('mouse')) {
+                            clientX = e.clientX;
+                            clientY = e.clientY;
+                        } else {
+                            clientX = e.touches[0].clientX;
+                            clientY = e.touches[0].clientY;
+                        }
+
+                        const deltaX = clientX - this.startX;
+                        const deltaY = clientY - this.startY;
+
+                        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                            e.preventDefault();
+                        }
+
+                        this.currentTranslate = deltaX;
                     },
+
                     dragEnd() {
                         if (!this.isDragging) return;
                         this.isDragging = false;
+
                         const threshold = this.itemWidth * 0.2;
                         if (this.currentTranslate < -threshold) this.next();
                         if (this.currentTranslate > threshold) this.prev();
@@ -534,16 +579,16 @@
     </div>
 
 
-    <section class="download py-12 sm:py-16 md:py-20 xl:py-24 px-4 sm:px-6 md:px-8 lg:px-14">
+    <section class="download py-8 sm:py-12 md:py-20 xl:py-24 px-4 sm:px-6 md:px-8 lg:px-14">
         <div class="flex flex-col items-center gap-6">
-            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-[45px] font-medium">
+            <h2 class="text-3xl md:text-4xl lg:text-[45px] font-medium">
                 DOWNLOAD, PLAY, WIN
             </h2>
             <div class="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-10 mt-6">
                 <a href="…" target="_blank"
                     class="flex items-center justify-center h-20 sm:h-24 bg-[#060606] text-white px-8 sm:px-12 rounded-2xl transition-shadow hover:shadow-lg">
-                    <svg class="h-16 w-auto mr-5" height="200px" width="200px" version="1.1" id="Layer_1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    <svg class="h-10 sm:h-16 w-auto mr-5" height="200px" width="200px" version="1.1"
+                        id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                         viewBox="0 0 511.999 511.999" xml:space="preserve" fill="#000000">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -583,10 +628,11 @@
                 </a>
 
                 <a href="…" target="_blank"
-                    class="flex items-center justify-center h-20 sm:h-24 bg-[#060606] text-white px-8 sm:px-12 rounded-2xl transition-shadow hover:shadow-lg">
-                    <svg class="h-16 w-auto mr-5" fill="#ffffff" height="200px" width="200px" version="1.1"
-                        id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                        viewBox="0 0 311.265 311.265" xml:space="preserve" stroke="#ffffff">
+                    class="flex items-center justify-center h-20 sm:h-24 bg-[#060606] text-white px-8 sm:px-12 rounded-2xl transition-shadow hover:shadow-lg w-full sm:w-auto">
+                    <svg class="h-10 sm:h-16 w-auto mr-5" fill="#ffffff" height="200px" width="200px"
+                        version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 311.265 311.265" xml:space="preserve"
+                        stroke="#ffffff">
                         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
                         <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
                         <g id="SVGRepo_iconCarrier">
