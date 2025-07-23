@@ -235,6 +235,7 @@
 
                     <!-- Navigation Links -->
                     <div class="Links flex flex-wrap justify-center items-center space-x-4 space-y-3 mb-4">
+                        <a href=""></a>
                         <a href="{{ route('users.contact') }}"
                             class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
                             Contact Us
