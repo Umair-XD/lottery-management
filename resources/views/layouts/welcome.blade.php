@@ -127,6 +127,9 @@
                 <a href="{{ route('users.giving') }}" class="py-2 font-medium">Giving Back</a>
                 <a href="{{ route('users.faq') }}" class="py-2 font-medium">FAQ’s</a>
                 <a href="{{ route('users.rules') }}" class="py-2 font-medium">Rules</a>
+                <a href="{{ route('users.terms') }}" class="py-2 font-medium">Terms & Conditions</a>
+                <a href="{{ route('users.privacy') }}" class="py-2 font-medium">Privacy Policy</a>
+                <a href="{{ route('users.about') }}" class="py-2 font-medium">About Us</a>
             </nav>
             <div class="mt-8">
                 <a href="{{ route('register') }}"
@@ -231,20 +234,20 @@
                     </div>
 
                     <!-- Navigation Links -->
-                    <div class="Links flex flex-wrap justify-center items-center space-x-4 mb-4">
-                        <a href="#"
+                    <div class="Links flex flex-wrap justify-center items-center space-x-4 space-y-3 mb-4">
+                        <a href="{{ route('users.contact') }}"
                             class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
                             Contact Us
                         </a>
-                        <a href="#"
+                        <a href="{{ route('users.privacy') }}"
                             class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
                             Privacy Policy
                         </a>
-                        <a href="#"
+                        <a href="{{ route('users.about') }}"
                             class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
                             About Us
                         </a>
-                        <a href="#"
+                        <a href="{{ route('users.terms') }}"
                             class="font-medium text-sm sm:text-base md:text-lg lg:text-xl border-l-2 pl-4 hover:text-gray-300">
                             Terms & Conditions
                         </a>

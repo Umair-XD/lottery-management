@@ -23,14 +23,14 @@
             </div>
 
             <p>
-                At Kingdom Draw, we believe that true success isn’t just about winning big prizes it’s also about
+                At Kingdoms Draw, we believe that true success isn’t just about winning big prizes it’s also about
                 spreading hope and creating real change in people’s lives. That’s why we’ve launched our Hope Fund
                 Programme, a long-term initiative to give back to the people of Pakistan. A portion of every ticket you
                 buy goes directly into supporting causes that matter, like improving education for children, providing
                 clean drinking water in villages, and helping families earn a better living through skill-building and
                 job opportunities. We understand that many communities in our country are struggling with basic needs,
                 and through this programme, we want to be a small part of the solution. Every contribution, no matter
-                how small, helps us reach more people and do more good. We see Kingdom Draw as more than just a draw
+                how small, helps us reach more people and do more good. We see Kingdoms Draw as more than just a draw
                 it’s a movement of care, hope, and giving.
             </p>
             <p class="mt-4">

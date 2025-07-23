@@ -27,7 +27,7 @@
                     <!-- The answer container uses Tailwind classes to handle the transition -->
                     <div class="faq-answer overflow-hidden transition-all duration-300 ease-out" style="max-height: 0;">
                         <p class="mt-4 text-[#363049]">
-                            To enter a Kingdom Draw, you need to purchase a ticket through our website or mobile app. Each ticket is considered a product that qualifies you for a chance to win in the lucky draw.
+                            To enter a Kingdoms Draw, you need to purchase a ticket through our website or mobile app. Each ticket is considered a product that qualifies you for a chance to win in the lucky draw.
                         </p>
                     </div>
                 </div>
