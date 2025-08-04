@@ -19,7 +19,7 @@
 
             <div
                 class="float-left w-full sm:w-[500px] md:w-[550px] lg:w-[600px] aspect-[7/6] bg-[#21366F] rounded-[20px] mr-6 mb-4 overflow-hidden">
-                <!-- <img src="/image.jpg" alt="" class="w-full h-full object-cover" /> -->
+                <x-about-svg></x-about-svg>
             </div>
 
             <p>

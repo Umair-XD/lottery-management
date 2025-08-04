@@ -17,6 +17,13 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            // SMS fields
+            $table->string('mobile')->unique()->nullable();
+            $table->timestamp('mobile_verified_at')->nullable();
+            $table->string('sms_verification_code')->nullable();
+            $table->timestamp('sms_code_expires_at')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

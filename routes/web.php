@@ -6,6 +6,25 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\TiresController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\SmsVerificationController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+Route::middleware('auth')->group(function () {
+    // 1. Show/send OTP form
+    Route::get('sms/request',  [SmsVerificationController::class, 'showRequestForm'])->name('sms.request.form');
+    Route::post('sms/request', [SmsVerificationController::class, 'sendOtp'])->name('sms.send');
+
+    // 2. Show/handle OTP verification
+    Route::get('sms/verify',   [SmsVerificationController::class, 'showVerifyForm'])->name('sms.verify.form');
+    Route::post('sms/verify',  [SmsVerificationController::class, 'verifyOtp'])->name('sms.verify');
+});
+
+// Twilio delivery-status callback (public API):
+Route::post('api/twilio/status-callback', function (Request $req) {
+    Log::info('Twilio Callback', $req->all());
+    return response()->json(['received' => true]);
+})->name('twilio.callback');
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -33,12 +52,13 @@ Route::middleware('auth')->group(function () {
 });
 
 //Admin routes
-Route::prefix('admin')->name('admin.')->middleware(['auth'
-// ,'role:admin'
+Route::prefix('admin')->name('admin.')->middleware([
+    'auth'
+    // ,'role:admin'
 ])->group(function () {
     Route::resource('tires', TiresController::class);
     Route::resource('tickets', TicketController::class);
     Route::resource('banners', BannerController::class);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

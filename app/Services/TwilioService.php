@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use Twilio\Rest\Client;
+use Illuminate\Support\Facades\Log;
 
 class TwilioService
 {
-    protected $client;
+    protected Client $client;
+    protected string $messagingServiceSid;
 
     public function __construct()
     {
@@ -14,26 +16,45 @@ class TwilioService
             config('services.twilio.sid'),
             config('services.twilio.token')
         );
+        $this->messagingServiceSid = config('services.twilio.messaging_service_sid');
     }
 
-    public function sendSMS($to, $message)
+    /**
+     * Send SMS (generic) or OTP via options
+     *
+     * @param string $to      E.164 formatted number (e.g. '+923001234567')
+     * @param string $body    Text body
+     * @param array  $opts    Optional Twilio params:
+     *                        - 'statusCallback' => URL|string
+     *                        - 'validityPeriod' => int (seconds)
+     *                        - etc.
+     */
+    public function sendSMS(string $to, string $body, array $opts = [])
     {
-        return $this->client->messages->create(
-            $to, // Include country code, e.g., +923001234567
-            [
-                'from' => config('services.twilio_sms.from'),
-                'body' => $message,
-            ]
-        );
+        $params = array_merge([
+            'messagingServiceSid' => $this->messagingServiceSid,
+            'body'                => $body,
+        ], $opts);
+
+        try {
+            return $this->client->messages->create($to, $params);
+        } catch (\Exception $e) {
+            Log::error('Twilio SMS send failed: '.$e->getMessage(), compact('to','body','opts'));
+            throw $e;
+        }
     }
 
-    public function sendWhatsApp($to, $message)
+    /**
+     * Shortcut for OTPs: sets a 6-digit body, TTL and callback
+     */
+    public function sendOtp(string $to, string $code, int $ttl = 300)
     {
-        return $this->client->messages->create(
-            'whatsapp:' . $to,
+        return $this->sendSMS(
+            $to,
+            "Your verification code is {$code}",
             [
-                'from' => config('services.twilio.from'),
-                'body' => $message,
+                'statusCallback' => route('twilio.callback'),
+                'validityPeriod' => $ttl,
             ]
         );
     }

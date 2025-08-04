@@ -21,12 +21,11 @@ return [
     'twilio' => [
         'sid'   => env('TWILIO_SID'),
         'token' => env('TWILIO_AUTH_TOKEN'),
-        'from'  => env('TWILIO_WHATSAPP_FROM'),
+        'messaging_service_sid' => env('TWILIO_MESSAGING_SERVICE_SID'),
     ],
     'twilio_sms' => [
         'from' => env('TWILIO_SMS_FROM'),
     ],
-
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

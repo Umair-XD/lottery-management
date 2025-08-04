@@ -1,153 +1,3 @@
-{{-- <x-guest-layout>
-    <!-- Welcome Header -->
-    <div class="welcome flex flex-col items-center justify-center md:mt-16 mt-6">
-        <h1 class="text-2xl md:text-3xl font-black text-center">Welcome to KingdomsDraw</h1>
-        <p class="text-sm md:text-lg text-center">Please create your account and start the adventure</p>
-    </div>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
-        <div class="feilds flex flex-col items-center mt-8">
-
-            <!-- Name Field -->
-            <div class="relative mt-4">
-                <!-- Person Icon -->
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-[#223871]" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="6" r="4" stroke-width="1.5"></circle>
-                        <path
-                            d="M19.9975 18C20 17.8358 20 17.669 20 17.5C20 15.0147 16.4183 13 12 13C7.58172 13 4 15.0147 4 17.5C4 19.9853 4 22 12 22C14.231 22 15.8398 21.8433 17 21.5634"
-                            stroke-width="1.5" stroke-linecap="round"></path>
-                    </svg>
-                </div>
-                <!-- Name Input with Floating Placeholder -->
-                <x-text-input id="name" name="name" type="text" :value="old('name')" required autofocus
-                    autocomplete="name"
-                    class="peer block w-64 md:w-80 pl-10 pr-2 py-2 border border-gray-300 rounded placeholder-transparent"
-                    placeholder="Name" />
-                <!-- Floating Label -->
-                <label for="name"
-                    class="absolute left-10 bg-white px-1 text-sm text-[#223871] transition-all duration-200 origin-left
-                          top-0 -translate-y-1/2 scale-75
-                          peer-placeholder-shown:top-1/2 peer-placeholder-shown:translate-y-[-50%] peer-placeholder-shown:scale-100
-                          peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:scale-75">
-                    Name
-                </label>
-                <x-input-error :messages="$errors->get('name')" class="mt-2" />
-            </div>
-
-            <!-- Email Field -->
-            <div class="relative mt-4">
-                <!-- Envelope Icon for Email -->
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-[#223871]" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg" stroke="#223871">
-                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-                        <g id="SVGRepo_iconCarrier">
-                            <path
-                                d="M22 12C22 15.7712 22 17.6569 20.8284 18.8284C19.6569 20 17.7712 20 14 20H10C6.22876 20 4.34315 20 3.17157 18.8284C2 17.6569 2 15.7712 2 12C2 8.22876 2 6.34315 3.17157 5.17157C4.34315 4 6.22876 4 10 4H14C17.7712 4 19.6569 4 20.8284 5.17157C21.4816 5.82475 21.7706 6.69989 21.8985 8"
-                                stroke="#223871" stroke-width="1.5" stroke-linecap="round"></path>
-                            <path
-                                d="M18 8L15.8411 9.79908C14.0045 11.3296 13.0861 12.0949 12 12.0949C11.3507 12.0949 10.7614 11.8214 10 11.2744M6 8L6.9 8.75L7.8 9.5"
-                                stroke="#223871" stroke-width="1.5" stroke-linecap="round"></path>
-                        </g>
-                    </svg>
-                </div>
-                <!-- Email Input with Floating Placeholder -->
-                <x-text-input id="email" name="email" type="email" :value="old('email')" required
-                    autocomplete="username"
-                    class="peer block w-64 md:w-80 pl-10 pr-2 py-2 border border-gray-300 rounded placeholder-transparent"
-                    placeholder="Email" />
-                <!-- Floating Label -->
-                <label for="email"
-                    class="absolute left-10 bg-white px-1 text-sm text-[#223871] transition-all duration-200 origin-left
-                          top-0 -translate-y-1/2 scale-75
-                          peer-placeholder-shown:top-1/2 peer-placeholder-shown:translate-y-[-50%] peer-placeholder-shown:scale-100
-                          peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:scale-75">
-                    Email
-                </label>
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-            </div>
-
-            <!-- Password Field -->
-            <div class="relative mt-4">
-                <!-- Padlock Icon for Password -->
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-[#223871]" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M6 10V8C6 7.65929 6.0284 7.32521 6.08296 7M18 10V8C18 4.68629 15.3137 2 12 2C10.208 2 8.59942 2.78563 7.5 4.03126"
-                            stroke="#223871" stroke-width="1.5" stroke-linecap="round" />
-                        <path
-                            d="M11 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H15"
-                            stroke="#223871" stroke-width="1.5" stroke-linecap="round" />
-                    </svg>
-                </div>
-                <!-- Password Input with Floating Placeholder -->
-                <x-text-input id="password" name="password" type="password" required autocomplete="new-password"
-                    class="peer block w-64 md:w-80 pl-10 pr-2 py-2 border border-gray-300 rounded placeholder-transparent"
-                    placeholder="Password" />
-                <!-- Floating Label -->
-                <label for="password"
-                    class="absolute left-10 bg-white px-1 text-sm text-[#223871] transition-all duration-200 origin-left
-                          top-0 -translate-y-1/2 scale-75
-                          peer-placeholder-shown:top-1/2 peer-placeholder-shown:translate-y-[-50%] peer-placeholder-shown:scale-100
-                          peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:scale-75">
-                    Password
-                </label>
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-            </div>
-
-            <!-- Confirm Password Field -->
-            <div class="relative mt-4">
-                <!-- Lock Icon for Confirm Password (reusing the password icon) -->
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-[#223871]" viewBox="0 0 24 24" fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M6 10V8C6 7.65929 6.0284 7.32521 6.08296 7M18 10V8C18 4.68629 15.3137 2 12 2C10.208 2 8.59942 2.78563 7.5 4.03126"
-                            stroke="#223871" stroke-width="1.5" stroke-linecap="round" />
-                        <path
-                            d="M11 22H8C5.17157 22 3.75736 22 2.87868 21.1213C2 20.2426 2 18.8284 2 16C2 13.1716 2 11.7574 2.87868 10.8787C3.75736 10 5.17157 10 8 10H16C18.8284 10 20.2426 10 21.1213 10.8787C22 11.7574 22 13.1716 22 16C22 18.8284 22 20.2426 21.1213 21.1213C20.2426 22 18.8284 22 16 22H15"
-                            stroke="#223871" stroke-width="1.5" stroke-linecap="round" />
-                    </svg>
-                </div>
-                <!-- Confirm Password Input with Floating Placeholder -->
-                <x-text-input id="password_confirmation" name="password_confirmation" type="password" required
-                    autocomplete="new-password"
-                    class="peer block w-64 md:w-80 pl-10 pr-2 py-2 border border-gray-300 rounded placeholder-transparent"
-                    placeholder="Confirm Password" />
-                <!-- Floating Label -->
-                <label for="password_confirmation"
-                    class="absolute left-10 bg-white px-1 text-sm text-[#223871] transition-all duration-200 origin-left
-                          top-0 -translate-y-1/2 scale-75
-                          peer-placeholder-shown:top-1/2 peer-placeholder-shown:translate-y-[-50%] peer-placeholder-shown:scale-100
-                          peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:scale-75">
-                    Confirm Password
-                </label>
-                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-            </div>
-        </div>
-
-        <!-- Submit and Login Link -->
-        <div class="flex flex-col items-center justify-center mt-12">
-            <div class="button flex justify-center w-full">
-                <x-primary-button class="ms-4">{{ __('Register') }}</x-primary-button>
-            </div>
-
-            <div class="flex items-center text-sm md:text-base mt-2">
-                <a class="text-gray-900 font-bold" href="{{ route('login') }}">
-                    {{ __('Already have an account?') }}
-                </a>
-                <a class="font-black text-[#223871] ml-1" href="{{ route('login') }}">
-                    {{ __('Login') }}
-                </a>
-            </div>
-        </div>
-    </form>
-</x-guest-layout> --}}
-
 <x-guest-layout>
     <!-- Welcome Header -->
     <div class="welcome flex flex-col items-center justify-center md:mt-16 mt-6">
@@ -161,7 +11,7 @@
         @csrf
 
         <div class="fields flex flex-col items-center mt-8">
-            <!-- Full Name (as per CNIC) -->
+            <!-- Full Name -->
             <div class="relative mt-4">
                 <!-- Person Icon -->
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -172,18 +22,18 @@
                             d="M19.9975 18C20 17.8358 20 17.669 20 17.5C20 15.0147 16.4183 13 12 13C7.58172 13 4 15.0147 4 17.5C4 19.9853 4 22 12 22C14.231 22 15.8398 21.8433 17 21.5634" />
                     </svg>
                 </div>
-                <x-text-input id="full_name" name="full_name" type="text" :value="old('full_name')" required autofocus
+                <x-text-input id="name" name="name" type="text" :value="old('name')" required autofocus
                     autocomplete="name"
                     class="peer block w-64 md:w-80 pl-10 pr-2 py-2 border border-gray-300 rounded placeholder-transparent"
                     placeholder="Full Name (as per CNIC)" />
-                <label for="full_name"
+                <label for="name"
                     class="absolute left-10 bg-white px-1 text-sm text-[#223871] transition-all duration-200 origin-left
                               top-0 -translate-y-1/2 scale-75
                               peer-placeholder-shown:top-1/2 peer-placeholder-shown:translate-y-[-50%] peer-placeholder-shown:scale-100
                               peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:scale-75">
-                    Full Name (as per CNIC)
+                    Full Name
                 </label>
-                <x-input-error :messages="$errors->get('full_name')" class="mt-2" />
+                <x-input-error :messages="$errors->get('name')" class="mt-2" />
             </div>
 
             <!-- Email Address -->
@@ -212,7 +62,7 @@
                 <x-input-error :messages="$errors->get('email')" class="mt-2" />
             </div>
 
-            <!-- Mobile Number -->
+            {{-- <!-- Mobile Number -->
             <div class="relative mt-4">
                 <!-- Mobile Icon -->
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -244,10 +94,17 @@
             <div class="relative mt-4">
                 <!-- OTP Icon (Key icon) -->
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#223871]" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 7a3 3 0 00-3-3H7a3 3 0 00-3 3v8a3 3 0 003 3h5l4 4v-4a3 3 0 003-3V7z" />
+                    <svg class="w-5 h-5 text-[#223871]" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                        <g id="SVGRepo_iconCarrier">
+                            <circle cx="3" cy="3" r="3" transform="matrix(-1 0 0 1 22 2)"
+                                stroke="#223871" stroke-width="1.5"></circle>
+                            <path
+                                d="M14 2.20004C13.3538 2.06886 12.6849 2 12 2C10.1786 2 8.47087 2.48697 7 3.33782M21.8 10C21.9311 10.6462 22 11.3151 22 12C22 17.5228 17.5228 22 12 22C10.4003 22 8.88837 21.6244 7.54753 20.9565C7.19121 20.7791 6.78393 20.72 6.39939 20.8229L4.17335 21.4185C3.20701 21.677 2.32295 20.793 2.58151 19.8267L3.17712 17.6006C3.28001 17.2161 3.22094 16.8088 3.04346 16.4525C2.37562 15.1116 2 13.5997 2 12C2 10.1786 2.48697 8.47087 3.33782 7"
+                                stroke="#223871" stroke-width="1.5" stroke-linecap="round"></path>
+                        </g>
                     </svg>
                 </div>
                 <x-text-input id="otp" name="otp" type="text" :value="old('otp')" required
@@ -262,7 +119,7 @@
                     OTP
                 </label>
                 <x-input-error :messages="$errors->get('otp')" class="mt-2" />
-            </div>
+            </div> --}}
 
             <!-- Password Field -->
             <div class="relative mt-4">
@@ -322,31 +179,11 @@
             <!-- User Agreements -->
             <div class="mt-6 w-64 md:w-80">
                 <div class="flex items-center mt-2">
-                    <input id="age_confirm" name="age_confirm" type="checkbox"
-                        class="rounded border-gray-300 text-[#223871] focus:ring-[#223871]">
-                    <label for="age_confirm" class="ml-2 text-sm text-gray-700">
-                        I am 18 years or older.
-                    </label>
-                </div>
-                <div class="flex items-center mt-2">
                     <input id="terms" name="terms" type="checkbox"
                         class="rounded border-gray-300 text-[#223871] focus:ring-[#223871]">
                     <label for="terms" class="ml-2 text-sm text-gray-700">
-                        I agree to the <a href="#" class="underline">Terms &amp; Conditions</a>.
-                    </label>
-                </div>
-                <div class="flex items-center mt-2">
-                    <input id="privacy" name="privacy" type="checkbox"
-                        class="rounded border-gray-300 text-[#223871] focus:ring-[#223871]">
-                    <label for="privacy" class="ml-2 text-sm text-gray-700">
-                        I agree to the <a href="#" class="underline">Privacy Policy</a>.
-                    </label>
-                </div>
-                <div class="flex items-center mt-2">
-                    <input id="responsible_play" name="responsible_play" type="checkbox"
-                        class="rounded border-gray-300 text-[#223871] focus:ring-[#223871]">
-                    <label for="responsible_play" class="ml-2 text-sm text-gray-700">
-                        I understand and accept the <a href="#" class="underline">Responsible Play policy</a>.
+                        I agree to the <a href="{{ route('users.terms') }}" class="underline">Terms and Conditions</a>
+                        &amp; <a href="{{ route('users.privacy') }}" class="underline">Privacy Policy</a>.
                     </label>
                 </div>
                 <x-input-error :messages="$errors->get('agreements')" class="mt-2" />
@@ -354,7 +191,7 @@
         </div>
 
         <!-- Submit and Login Link -->
-        <div class="flex flex-col items-center justify-center mt-12">
+        <div class="flex flex-col items-center justify-center mt-10">
             <div class="button flex justify-center w-full">
                 <x-primary-button class="ms-4">{{ __('Register') }}</x-primary-button>
             </div>
