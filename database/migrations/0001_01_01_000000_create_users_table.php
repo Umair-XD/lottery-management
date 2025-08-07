@@ -24,6 +24,9 @@ return new class extends Migration
             $table->string('sms_verification_code')->nullable();
             $table->timestamp('sms_code_expires_at')->nullable();
 
+            $table->string('password_reset_code')->nullable();
+            $table->timestamp('password_reset_expires_at')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
         });

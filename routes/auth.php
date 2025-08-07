@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\SmsVerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -33,6 +34,18 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // SMS‐based “Forgot Password” → send OTP
+   Route::get('forgot-password/sms', [SmsVerificationController::class, 'showRequestForm'])
+       ->name('password.sms.request');
+   Route::post('forgot-password/sms', [SmsVerificationController::class, 'sendOtp'])
+       ->name('password.sms.send');
+
+   // SMS‐based “Reset Password” → verify OTP + set new password
+   Route::get('reset-password/sms', [SmsVerificationController::class, 'showVerifyForm'])
+       ->name('password.sms.verify.form');
+   Route::post('reset-password/sms', [SmsVerificationController::class, 'verifyOtp'])
+       ->name('password.sms.verify');
 });
 
 Route::middleware('auth')->group(function () {
