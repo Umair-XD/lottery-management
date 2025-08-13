@@ -1,5 +1,6 @@
 $(document).ready(function () {
-    // Helper: Show a loading spinner in the tire list container
+
+    // Show a loading spinner in the tire list container
     function showTireSpinner() {
         $("#tire-list").html(`
             <div class="flex items-center justify-center py-8">
@@ -8,7 +9,7 @@ $(document).ready(function () {
         `);
     }
 
-    // Function to load tire tiers dynamically
+    // Load tire tiers via AJAX and render table
     function loadTires() {
         showTireSpinner();
         $.ajax({
@@ -16,61 +17,81 @@ $(document).ready(function () {
             method: "GET",
             dataType: "json",
             success: function (data) {
-                // If no tire tiers are returned, notify the user
                 if (data.length === 0) {
-                    $("#tire-list").html(
-                        '<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 p-4 rounded">No Ticket tiers available. Please add a tier.</div>'
-                    );
+                    $("#tire-list").html(`
+                        <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 p-4 rounded">
+                            No ticket tiers available. Please add a tier.
+                        </div>
+                    `);
                     return;
                 }
 
-                // Build the HTML table for tire tiers
                 let html = `
                 <div class="overflow-x-auto px-4 py-2">
                   <table class="min-w-full border border-gray-300 rounded-lg shadow-md divide-y divide-gray-300">
                     <thead class="bg-[#223871] text-white">
                       <tr>
-                        <th scope="col" class="w-1/12 px-6 py-3 text-center text-xs font-bold tracking-wide uppercase">ID</th>
-                        <th scope="col" class="w-3/12 px-6 py-3 text-center text-xs font-bold tracking-wide uppercase">Tier Name</th>
-                        <th scope="col" class="w-3/12 px-6 py-3 text-center text-xs font-bold tracking-wide uppercase">Price</th>
-                        <th scope="col" class="w-3/12 px-6 py-3 text-center text-xs font-bold tracking-wide uppercase">Draw Date</th>
-                        <th scope="col" class="w-2/12 px-6 py-3 text-center text-xs font-bold tracking-wide uppercase">Actions</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">ID</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">Tier Name</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">Price</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">Entries/Ticket</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">Prize Amount</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">Multiplier</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">Draw Date</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">BG Color</th>
+                        <th class="px-6 py-3 text-center text-xs font-bold uppercase">Actions</th>
                       </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">`;
+                    <tbody class="divide-y divide-gray-200">
+                `;
 
-                $.each(data, function (index, tire) {
+                $.each(data, function (_, tire) {
                     html += `
                       <tr class="hover:bg-gray-100">
-                        <td class="px-6 py-4 text-sm text-gray-700 text-center border-b border-gray-200">${tire.id}</td>
-                        <td class="px-6 py-4 text-sm text-gray-700 text-center border-b border-gray-200">${tire.name}</td>
-                        <td class="px-6 py-4 text-sm text-gray-700 text-center border-b border-gray-200">${tire.price}</td>
-                        <td class="px-6 py-4 text-sm text-gray-700 text-center border-b border-gray-200">${tire.draw_date}</td>
-                        <td class="px-6 py-4 text-center border-b border-gray-200 flex justify-center gap-2">
-                          <button class="edit-tire bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded-md shadow transform transition-transform hover:scale-105" data-id="${tire.id}">Edit</button>
-                          <button class="delete-tire bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md shadow transform transition-transform hover:scale-105" data-id="${tire.id}">Delete</button>
+                        <td class="px-6 py-4 text-sm text-gray-700 text-center">${tire.id}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700 text-center">${tire.name}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700 text-center">${tire.price}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700 text-center">${tire.prize_amount}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700 text-center">${tire.multiplier}</td>
+                        <td class="px-6 py-4 text-sm text-gray-700 text-center">${tire.draw_date}</td>
+                        <td class="px-6 py-4 text-sm text-center">
+                          <div class="w-6 h-6 mx-auto rounded" style="background: ${tire.bg_color}"></div>
                         </td>
-                      </tr>`;
+                        <td class="px-6 py-4 text-center flex justify-center gap-2">
+                          <button
+                            class="edit-tire bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-3 rounded-md shadow hover:scale-105"
+                            data-id="${tire.id}"
+                          >Edit</button>
+                          <button
+                            class="delete-tire bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded-md shadow hover:scale-105"
+                            data-id="${tire.id}"
+                          >Delete</button>
+                        </td>
+                      </tr>
+                    `;
                 });
 
                 html += `
                     </tbody>
                   </table>
                 </div>`;
+
                 $("#tire-list").html(html);
             },
             error: function () {
-                $("#tire-list").html(
-                    '<p class="text-red-500 p-4">Failed to load ticket tiers. Please try again.</p>'
-                );
-            },
+                $("#tire-list").html(`
+                    <p class="text-red-500 p-4">
+                        Failed to load ticket tiers. Please try again.
+                    </p>
+                `);
+            }
         });
     }
 
-    // Initially load tire tiers
+    // Initial load
     loadTires();
 
-    // Show modal for creating a new tire tier
+    // Open modal for new tier
     $("#create-tire-btn").click(function () {
         $("#tire-form")[0].reset();
         $("#tire_id").val("");
@@ -79,85 +100,59 @@ $(document).ready(function () {
             .addClass("opacity-100 pointer-events-auto");
     });
 
-    // Close modal when clicking close or cancel buttons
+    // Close modal
     $("#close-tire-modal, #cancel-tire-btn").click(function () {
         $("#tire-modal")
             .removeClass("opacity-100 pointer-events-auto")
             .addClass("opacity-0 pointer-events-none");
     });
 
-    // Submit form for creating/updating tire tiers
+    // Create / Update tier
     $("#tire-form").submit(function (e) {
         e.preventDefault();
         const tireId = $("#tire_id").val();
         const formData = {
             name: $("#tire_name").val(),
             price: $("#tire_price").val(),
+            prize_amount: $("#tire_prize_amount").val(),
+            multiplier: $("#tire_multiplier").val(),
             draw_date: $("#tire_draw_date").val(),
+            bg_color: $("#tire_bg_color").val(),
+        };
+
+        const ajaxOpts = {
+            data: formData,
+            headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
+            success(response) {
+                alert(response.message);
+                $("#tire-modal")
+                    .removeClass("opacity-100 pointer-events-auto")
+                    .addClass("opacity-0 pointer-events-none");
+                loadTires();
+            },
+            error(xhr) {
+                const errors = xhr.responseJSON?.errors;
+                if (errors) {
+                    Object.values(errors).forEach(msgs => alert(msgs[0]));
+                } else {
+                    alert(tireId ? "Error updating tire tier." : "Error creating tire tier.");
+                }
+            }
         };
 
         if (tireId === "") {
-            // Create a new tire tier
-            $.ajax({
-                url: "/admin/tires",
-                method: "POST",
-                data: formData,
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content"
-                    ),
-                },
-                success: function (response) {
-                    alert(response.message);
-                    $("#tire-modal")
-                        .removeClass("opacity-100 pointer-events-auto")
-                        .addClass("opacity-0 pointer-events-none");
-                    loadTires();
-                },
-                error: function (xhr) {
-                    const errors = xhr.responseJSON?.errors;
-                    if (errors) {
-                        for (let field in errors) {
-                            alert(errors[field][0]);
-                        }
-                    } else {
-                        alert("Error creating tire tier.");
-                    }
-                },
-            });
+            $.extend(ajaxOpts, { url: "/admin/tires", method: "POST" });
         } else {
-            // Update existing tire tier
-            $.ajax({
+            $.extend(ajaxOpts, {
                 url: `/admin/tires/${tireId}`,
-                method: "PUT",
-                data: formData,
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
-                        "content"
-                    ),
-                },
-                success: function (response) {
-                    alert(response.message);
-                    $("#tire-modal")
-                        .removeClass("opacity-100 pointer-events-auto")
-                        .addClass("opacity-0 pointer-events-none");
-                    loadTires();
-                },
-                error: function (xhr) {
-                    const errors = xhr.responseJSON?.errors;
-                    if (errors) {
-                        for (let field in errors) {
-                            alert(errors[field][0]);
-                        }
-                    } else {
-                        alert("Error updating tire tier.");
-                    }
-                },
+                method: "PUT"
             });
         }
+
+        $.ajax(ajaxOpts);
     });
 
-    // Edit tire tier: Fill modal with existing data
+    // Edit: fetch and populate
     $(document).on("click", ".edit-tire", function () {
         const tireId = $(this).data("id");
         $.ajax({
@@ -168,34 +163,38 @@ $(document).ready(function () {
                 $("#tire_id").val(tire.id);
                 $("#tire_name").val(tire.name);
                 $("#tire_price").val(tire.price);
-                $("#tire_draw_date").val(tire.draw_date);
+                $("#tire_prize_amount").val(tire.prize_amount);
+                $("#tire_multiplier").val(tire.multiplier);
+
+                // Trim ISO to YYYY-MM-DDThh:mm for datetime-local
+                $("#tire_draw_date").val(tire.draw_date.substring(0, 16));
+                $("#tire_bg_color").val(tire.bg_color);
+
                 $("#tire-modal")
                     .removeClass("opacity-0 pointer-events-none")
                     .addClass("opacity-100 pointer-events-auto");
             },
-            error: function () {
+            error() {
                 alert("Failed to fetch tire tier details.");
-            },
+            }
         });
     });
 
-    // Delete tire tier
+    // Delete tier
     $(document).on("click", ".delete-tire", function () {
         if (!confirm("Are you sure you want to delete this tire tier?")) return;
         const tireId = $(this).data("id");
         $.ajax({
             url: `/admin/tires/${tireId}`,
             method: "DELETE",
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-            },
-            success: function (response) {
+            headers: { "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") },
+            success(response) {
                 alert(response.message);
                 loadTires();
             },
-            error: function () {
+            error() {
                 alert("Error deleting tire tier.");
-            },
+            }
         });
     });
 });

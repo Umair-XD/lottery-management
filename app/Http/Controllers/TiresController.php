@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tires;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TiresController extends Controller
@@ -16,17 +17,48 @@ class TiresController extends Controller
         return view('admin.tires.index', compact('tires'));
     }
 
-    // Unused methods can remain empty for now.
-    public function create() { /* Not in use */ }
-    public function show(Tires $tires) { /* Not in use */ }
-    public function edit(Tires $tires) { /* Not in use */ }
+    public function apicall()
+    {
+        // Fetch only future draws, order by soonest first
+        $tires = Tires::where('draw_date', '>', now())
+            ->orderBy('draw_date', 'asc')
+            ->get([
+                'id',
+                'bg_color',
+                'prize_amount',
+                'multiplier',
+                'price',
+                'draw_date',
+            ])
+            ->map(function ($tire) {
+                return [
+                    'id'            => $tire->id,
+                    'bg_color'      => $tire->bg_color,
+                    'prize_amount'  => $tire->prize_amount,
+                    'multiplier'    => $tire->multiplier,
+                    'price'         => $tire->price,
+                    // ISO string makes JavaScript Date happy
+                    'draw_date'     => Carbon::parse($tire->draw_date)->toIso8601String(),
+                ];
+            });
+
+        return response()->json($tires);
+    }
+
+    public function show(Tires $tire)
+    {
+        return response()->json($tire);
+    }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'      => 'required|string|unique:tires,name|max:255',
-            'price'     => 'required|integer|min:0',
-            'draw_date' => 'required|date'
+            'name'          => 'required|string|unique:tires,name|max:255',
+            'price'         => 'required|integer|min:0',
+            'draw_date'     => 'required|date',
+            'prize_amount'  => 'required|integer|min:0',
+            'multiplier'    => 'required|integer|min:1',
+            'bg_color'      => ['required', 'string', 'regex:/^#(?:[0-9a-fA-F]{3}){1,2}$/'],
         ]);
 
         $tire = Tires::create($data);
@@ -38,38 +70,46 @@ class TiresController extends Controller
             ]);
         }
 
-        return redirect()->route('admin.tires.index')
+        return redirect()
+            ->route('admin.tires.index')
             ->with('success', 'Ticket tier created successfully.');
     }
 
-    public function update(Request $request, Tires $tires)
+    public function update(Request $request, Tires $tire)
     {
         $data = $request->validate([
-            'name'      => 'required|string|unique:tires,name|max:255',
-            'price'     => 'required|integer|min:0',
-            'draw_date' => 'required|date'
+            'name'          => 'required|string|unique:tires,name,' . $tire->id . '|max:255',
+            'price'         => 'required|integer|min:0',
+            'draw_date'     => 'required|date',
+            'prize_amount'  => 'required|integer|min:0',
+            'multiplier'    => 'required|integer|min:1',
+            'bg_color'      => ['required', 'string', 'regex:/^#(?:[0-9a-fA-F]{3}){1,2}$/'],
         ]);
 
-        $tires->update($data);
+        $tire->update($data);
 
         if ($request->ajax()) {
             return response()->json([
                 'message' => 'Ticket tier updated successfully.',
-                'tire'    => $tires,
+                'tire'    => $tire,
             ]);
         }
 
-        return redirect()->route('admin.tires.index')
+        return redirect()
+            ->route('admin.tires.index')
             ->with('success', 'Ticket tier updated successfully.');
     }
 
-    public function destroy(Tires $tires, Request $request)
+    public function destroy(Request $request, Tires $tire)
     {
-        $tires->delete();
+        $tire->delete();
+
         if ($request->ajax()) {
             return response()->json(['message' => 'Ticket tier deleted successfully.']);
         }
-        return redirect()->route('admin.tires.index')
+
+        return redirect()
+            ->route('admin.tires.index')
             ->with('success', 'Ticket tier deleted successfully.');
     }
 }

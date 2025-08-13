@@ -7,6 +7,7 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\TiresController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\SmsVerificationController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -59,6 +60,7 @@ Route::prefix('admin')->name('admin.')->middleware([
     Route::resource('tires', TiresController::class);
     Route::resource('tickets', TicketController::class);
     Route::resource('banners', BannerController::class);
+    Route::resource('products', ProductController::class);
 });
 
 require __DIR__ . '/auth.php';

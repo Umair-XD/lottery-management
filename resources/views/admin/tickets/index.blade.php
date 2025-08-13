@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-admin-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -70,4 +70,4 @@
     @section('scripts')
         @vite('resources/js/tickets.js')
     @endsection
-</x-app-layout>
+</x-admin-layout>

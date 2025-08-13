@@ -3,8 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ApiSmsController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\TiresController;
 
 Route::prefix('v1')->group(function () {
+    Route::get('tires', [TiresController::class, 'apicall'])->name('tires.api.index');
+    Route::get('products', [ProductController::class, 'apicall'])->name('products.api.index');
     // STEP 1: register → issues short-lived token to carry you through SMS step
     Route::post('register', [AuthController::class, 'store']);
 

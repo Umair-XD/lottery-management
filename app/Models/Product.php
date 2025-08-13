@@ -3,17 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
-class Tires extends Model
+class Product extends Model
 {
     protected $fillable = [
         'name',
         'price',
-        'draw_date',
-        'entry_value',
         'prize_amount',
-        'multiplier',
+        'duration_phrase',
         'bg_color',
+        'image_url',
+        'draw_date',
     ];
 
     protected $casts = [
@@ -22,8 +23,8 @@ class Tires extends Model
 
     protected static function booted()
     {
-        static::creating(function ($tier) {
-            if (empty($tier->bg_color)) {
+        static::creating(function ($product) {
+            if (empty($product->bg_color)) {
                 $palette = [
                     '#62c9d6', // teal
                     '#0D2657', // navy
@@ -38,13 +39,8 @@ class Tires extends Model
                     '#2196F3', // blue
                     '#3b8fa8', // light blue
                 ];
-                $tier->bg_color = $palette[array_rand($palette)];
+                $product->bg_color = $palette[array_rand($palette)];
             }
         });
-    }
-
-    public function tickets()
-    {
-        return $this->hasMany(Ticket::class, 'tires_id');
     }
 }
