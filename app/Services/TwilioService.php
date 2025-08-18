@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Log;
+use RuntimeException;
+use Throwable;
 
 class TwilioService
 {
@@ -20,14 +22,9 @@ class TwilioService
     }
 
     /**
-     * Send SMS (generic) or OTP via options
+     * Send SMS message
      *
-     * @param string $to      E.164 formatted number (e.g. '+923001234567')
-     * @param string $body    Text body
-     * @param array  $opts    Optional Twilio params:
-     *                        - 'statusCallback' => URL|string
-     *                        - 'validityPeriod' => int (seconds)
-     *                        - etc.
+     * @throws RuntimeException if Twilio fails
      */
     public function sendSMS(string $to, string $body, array $opts = [])
     {
@@ -38,24 +35,26 @@ class TwilioService
 
         try {
             return $this->client->messages->create($to, $params);
-        } catch (\Exception $e) {
-            Log::error('Twilio SMS send failed: '.$e->getMessage(), compact('to','body','opts'));
-            throw $e;
+        } catch (Throwable $e) {
+            Log::error('Twilio SMS failed', [
+                'to'    => $to,
+                'error' => $e->getMessage(),
+            ]);
+
+            // Throw controlled exception, don’t expose Twilio internals
+            throw new RuntimeException('SMS delivery failed, please try again later.');
         }
     }
 
     /**
-     * Shortcut for OTPs: sets a 6-digit body, TTL and callback
+     * Shortcut: OTP message
      */
     public function sendOtp(string $to, string $code, int $ttl = 300)
     {
         return $this->sendSMS(
             $to,
             "Your verification code is {$code}",
-            [
-                'statusCallback' => route('twilio.callback'),
-                'validityPeriod' => $ttl,
-            ]
+            ['validityPeriod' => $ttl]
         );
     }
 }

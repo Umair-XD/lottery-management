@@ -9,46 +9,62 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\DB;
+use Laravel\Sanctum\PersonalAccessToken;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Validation\Rule;
-use Laravel\Sanctum\PersonalAccessToken;
+use Throwable;
 
 class AuthController extends Controller
 {
     public function __construct(protected TwilioService $twilio) {}
 
     /**
-     * STEP 1: Register with name/email/password → returns a temporary token
+     * STEP 1: Register -> create user + return temp registration token (ability: registration)
      */
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
             'name'     => ['required', 'string', 'max:255'],
-            'email'    => ['required', 'email', Rule::unique('users')],
+            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::defaults()],
+            // mobile can be supplied here or later via /mobile
+            'mobile'   => ['nullable', 'string', 'max:20'],
         ]);
 
-        $user = User::create([
-            'name'     => $data['name'],
-            'email'    => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        try {
+            return DB::transaction(function () use ($data) {
+                $user = User::create([
+                    'name'     => $data['name'],
+                    'email'    => $data['email'],
+                    'password' => Hash::make($data['password']),
+                    'mobile'   => $data['mobile'] ?? null,
+                ]);
 
-        $tempToken = $user
-            ->createToken('registration')
-            ->plainTextToken;
+                // temp registration token with ability 'registration'
+                $tempToken = $user->createToken('registration')->plainTextToken;
 
-        return response()->json([
-            'message'     => 'Account created. Please verify your mobile number to continue.',
-            'temp_token'  => $tempToken,
-            'next_action' => 'submit_mobile',
-        ], 201);
+                Log::info('User registered', [
+                    'user_id' => $user->id,
+                    'email'   => $user->email,
+                    'mobile'  => $user->mobile ? substr($user->mobile, 0, 4) . '****' : null,
+                ]);
+
+                return response()->json([
+                    'message'     => 'Account created. Please verify your mobile number to continue.',
+                    'temp_token'  => $tempToken,
+                    'next_action' => 'submit_mobile',
+                ], 201);
+            });
+        } catch (Throwable $e) {
+            Log::error('Registration failed', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Registration failed. Please try again.'], 500);
+        }
     }
 
     /**
-     * FINAL LOGIN: email/password → returns long‐lived token
+     * FINAL LOGIN: email/password → returns long-lived token (if mobile verified).
+     * If mobile NOT verified, returns temp registration token so client can verify mobile.
      */
     public function login(Request $request): JsonResponse
     {
@@ -65,13 +81,19 @@ class AuthController extends Controller
             ]);
         }
 
+        // if mobile not verified -> issue a temp token so client can call /mobile (send/verify)
         if (is_null($user->mobile_verified_at)) {
+            // create temp token (registration)
+            $tempToken = $user->createToken('registration')->plainTextToken;
+
             return response()->json([
-                'message' => 'Mobile number not verified.',
+                'message'     => 'Mobile number not verified.',
                 'next_action' => 'submit_mobile',
+                'temp_token'  => $tempToken,
             ], 423);
         }
 
+        // mobile verified -> issue final token
         $token = $user->createToken('mobile-app')->plainTextToken;
 
         return response()->json([
@@ -82,24 +104,36 @@ class AuthController extends Controller
     }
 
     /**
-     * Revoke the current token (temp or long-lived)
+     * Revoke current token (temp or long-lived)
      */
     public function logout(Request $request): JsonResponse
     {
-        /** @var PersonalAccessToken|null $token */
-        $token = $request->user()?->currentAccessToken();
+        try {
+            $user = $request->user();
+            $current = $user?->currentAccessToken();
 
-        if ($token) {
-            $token->delete();
+            // Preferred: token is the PersonalAccessToken model instance
+            if ($current instanceof PersonalAccessToken) {
+                $current->delete();
+            } elseif ($current && isset($current->id) && $user) {
+                // Fallback: delete via relation (covers edge-cases and silences analyzer)
+                $user->tokens()->where('id', $current->id)->delete();
+            }
+
+            Log::info('User logged out', [
+                'user_id' => $user?->id,
+            ]);
+
+            return response()->json(['message' => 'Logged out successfully.']);
+        } catch (Throwable $e) {
+            Log::error('Logout failed', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Logout failed.'], 500);
         }
-
-        return response()->json([
-            'message' => 'Logged out successfully.',
-        ]);
     }
 
+
     /**
-     * STEP A: Send password reset OTP to verified mobile number
+     * Public: Send password reset OTP to verified mobile (no auth required).
      */
     public function sendResetOtp(Request $request): JsonResponse
     {
@@ -111,22 +145,7 @@ class AuthController extends Controller
         $e164 = '+92' . ltrim($raw, '0');
 
         if (! preg_match('/^\+92[0-9]{10}$/', $e164)) {
-            return response()->json([
-                'message' => 'Please enter a valid Pakistan mobile number.',
-            ], 422);
-        }
-
-        // Throttle OTP requests (1 request per minute per number)
-        $executed = RateLimiter::attempt(
-            'otp-request:' . $e164,
-            $perMinute = 1,
-            fn () => true
-        );
-
-        if (! $executed) {
-            return response()->json([
-                'message' => 'Too many OTP requests. Try again in a minute.',
-            ], 429);
+            return response()->json(['message' => 'Please enter a valid Pakistan mobile number.'], 422);
         }
 
         $user = User::where('mobile', $e164)
@@ -134,33 +153,35 @@ class AuthController extends Controller
             ->first();
 
         if (! $user) {
-            return response()->json([
-                'message' => 'No verified account found with that number.',
-            ], 404);
+            return response()->json(['message' => 'No verified account found with that number.'], 404);
         }
 
-        $code = random_int(100000, 999999);
+        try {
+            $code = random_int(100000, 999999);
 
-        $user->update([
-            'password_reset_code'       => (string) $code,
-            'password_reset_expires_at' => now()->addMinutes(10),
-        ]);
+            DB::transaction(function () use ($user, $code, $e164) {
+                $user->update([
+                    'password_reset_code'       => (string) $code,
+                    'password_reset_expires_at' => now()->addMinutes(10),
+                ]);
 
-        // Send OTP via Twilio
-        $this->twilio->sendOtp($e164, $code);
+                // Twilio send; TwilioService throws on failure -> transaction will rollback
+                $this->twilio->sendOtp($e164, $code);
+            });
 
-        // Log OTP only in non-production
-        if (app()->environment('local', 'staging')) {
-            Log::info("OTP sent to {$e164}: {$code}");
+            if (app()->environment('local', 'staging')) {
+                Log::info("Password reset OTP generated", ['mobile' => substr($e164, 0, 4) . '****']);
+            }
+
+            return response()->json(['message' => "Password reset OTP sent to {$e164}."]);
+        } catch (Throwable $e) {
+            Log::error('OTP sending failed', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Failed to send OTP. Please try again later.'], 500);
         }
-
-        return response()->json([
-            'message' => "Password reset OTP sent to {$e164}.",
-        ]);
     }
 
     /**
-     * STEP B: Verify OTP and reset password
+     * Public: Verify OTP and reset password.
      */
     public function resetPassword(Request $request): JsonResponse
     {
@@ -180,23 +201,28 @@ class AuthController extends Controller
             $user->password_reset_code !== $request->otp ||
             $user->password_reset_expires_at?->isPast()
         ) {
-            return response()->json([
-                'message' => 'Invalid or expired OTP.',
-            ], 422);
+            return response()->json(['message' => 'Invalid or expired OTP.'], 422);
         }
 
-        // Revoke all tokens after reset for security
-        $user->tokens()->delete();
+        try {
+            DB::transaction(function () use ($user, $request) {
+                // Revoke all tokens for security
+                $user->tokens()->delete();
 
-        $user->update([
-            'password'                  => Hash::make($request->password),
-            'password_reset_code'       => null,
-            'password_reset_expires_at' => null,
-        ]);
+                $user->update([
+                    'password'                  => Hash::make($request->password),
+                    'password_reset_code'       => null,
+                    'password_reset_expires_at' => null,
+                ]);
+            });
 
-        return response()->json([
-            'message' => 'Password has been reset successfully.',
-            'next_action' => 'login_again',
-        ]);
+            return response()->json([
+                'message'     => 'Password has been reset successfully.',
+                'next_action' => 'login_again',
+            ]);
+        } catch (Throwable $e) {
+            Log::error('Password reset failed', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Password reset failed. Please try again later.'], 500);
+        }
     }
 }

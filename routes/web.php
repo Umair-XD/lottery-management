@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\SmsVerificationController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Twilio\Security\RequestValidator;
 
 Route::middleware('auth')->group(function () {
     // 1. Show/send OTP form
@@ -22,8 +23,26 @@ Route::middleware('auth')->group(function () {
 });
 
 // Twilio delivery-status callback (public API):
+// Route::post('api/twilio/status-callback', function (Request $req) {
+//     Log::info('Twilio Callback', $req->all());
+//     return response()->json(['received' => true]);
+// })->name('twilio.callback');
 Route::post('api/twilio/status-callback', function (Request $req) {
-    Log::info('Twilio Callback', $req->all());
+    $validator = new RequestValidator(config('services.twilio.token'));
+
+    $signature = $req->header('X-Twilio-Signature');
+    $url       = $req->fullUrl();
+    $params    = $req->all();
+
+    if (! $validator->validate($signature, $url, $params)) {
+        Log::warning('⚠️ Invalid Twilio callback attempt', [
+            'url' => $url,
+            'params' => $params,
+        ]);
+        return response()->json(['error' => 'Invalid signature'], 403);
+    }
+    Log::info('Twilio Callback Verified', $params);
+
     return response()->json(['received' => true]);
 })->name('twilio.callback');
 
