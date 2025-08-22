@@ -14,7 +14,7 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
-        $products = Product::all();
+        $products = Product::where('draw_date', '>', now())->all();
 
         if ($request->ajax()) {
             return response()->json($products);
