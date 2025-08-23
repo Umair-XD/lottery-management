@@ -10,13 +10,12 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var string[]
      */
     protected $fillable = [
         'name',
@@ -24,30 +23,31 @@ class User extends Authenticatable
         'password',
         'mobile',
         'sms_verification_code',
+        'password_reset_code',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var string[]
      */
     protected $hidden = [
         'password',
         'remember_token',
+        'sms_verification_code',
+        'password_reset_code',
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast to native types.
      *
-     * @return array<string, string>
+     * @var array<string,string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'sms_code_expires_at'  => 'datetime',
-            'mobile_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'mobile_verified_at' => 'datetime',
+        'sms_code_expires_at' => 'datetime',
+        'password_reset_expires_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 }
