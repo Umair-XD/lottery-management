@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Ticket;
 use App\Models\Tires;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -44,10 +45,48 @@ class TiresController extends Controller
 
         return response()->json($tires);
     }
+    public function singleTicketapicall($id)
+    {
+        // Find the ticket by ID
+        $tire = Tires::find($id, [
+            'id',
+            'bg_color',
+            'prize_amount',
+            'multiplier',
+            'price',
+            'draw_date',
+        ]);
+
+        if (!$tire) {
+            return response()->json(['message' => 'Ticket not found'], 404);
+        }
+
+        $ticketData = [
+            'id'            => $tire->id,
+            'bg_color'      => $tire->bg_color,
+            'prize_amount'  => $tire->prize_amount,
+            'multiplier'    => $tire->multiplier,
+            'price'         => $tire->price,
+            'draw_date'     => Carbon::parse($tire->draw_date)->toIso8601String(),
+        ];
+
+        return response()->json($ticketData);
+    }
 
     public function show(Tires $tire)
     {
         return response()->json($tire);
+    }
+
+    public function ticketShow($id)
+    {
+        $ticket = Tires::findOrFail($id);
+        $tickets = Ticket::where('tires_id', $id)->where('status', 'active')->whereNull('user_id')->take(3)->get();
+
+        return view('ticket.show', [
+            'ticket'  => $ticket,
+            'tickets' => $tickets,
+        ]);
     }
 
     public function store(Request $request)

@@ -55,6 +55,7 @@
                             </div>
 
                             <button
+                                @click="window.location.href = '/ticket/cart/' + card.id"
                                 class="bg-white text-red-600 rounded-full text-xl font-bold py-3 px-5 mt-10 uppercase tracking-wide hover:bg-gray-100">
                                 BUY NOW
                             </button>

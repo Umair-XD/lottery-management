@@ -162,7 +162,7 @@ class AuthController extends Controller
             DB::transaction(function () use ($user, $code, $e164) {
                 $user->update([
                     'password_reset_code'       => (string) $code,
-                    'password_reset_expires_at' => now()->addMinutes(10),
+                    'password_reset_expires_at' => now()->addMinutes(5),
                 ]);
 
                 // Twilio send; TwilioService throws on failure -> transaction will rollback

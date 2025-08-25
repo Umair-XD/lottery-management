@@ -61,6 +61,8 @@ Route::get('/winners', [UserController::class, 'winners'])->name('users.winners'
 Route::get('/winners/{id}', [UserController::class, 'winnerDetails'])->name('users.winnerDetails');
 Route::get('/rules', [UserController::class, 'rules'])->name('users.rules');
 
+Route::get('/ticket/cart/{id}', [TiresController::class, 'ticketShow'])->name('ticket.show');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

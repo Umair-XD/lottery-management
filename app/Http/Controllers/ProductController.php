@@ -55,6 +55,40 @@ class ProductController extends Controller
 
         return response()->json($products);
     }
+    
+    /**
+     * API call for a single product by ID.
+     */
+    public function singleTicketapicall($id)
+    {
+        $product = Product::find($id, [
+            'id',
+            'name',
+            'price',
+            'duration_phrase',
+            'prize_amount',
+            'bg_color',
+            'image_url',
+            'draw_date',
+        ]);
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $productData = [
+            'id'              => $product->id,
+            'name'            => $product->name,
+            'image_url'       => $product->image_url,
+            'duration_phrase' => $product->duration_phrase,
+            'bg_color'        => $product->bg_color,
+            'prize_amount'    => $product->prize_amount,
+            'price'           => $product->price,
+            'draw_date'       => Carbon::parse($product->draw_date)->toIso8601String(),
+        ];
+
+        return response()->json($productData);
+    }
 
     /**
      * Show the specified resource.

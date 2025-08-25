@@ -1,8 +1,10 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
 import carouselFactory from './carousel.js';
+import countdownTimerFactory from './countdownTimer.js';
 
 Alpine.data('carousel', carouselFactory);
+Alpine.data('countdownTimer', countdownTimerFactory);
 
 window.Alpine = Alpine;
 

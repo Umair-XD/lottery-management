@@ -8,7 +8,9 @@ use App\Http\Controllers\TiresController;
 
 Route::prefix('v1')->group(function () {
     Route::get('tires', [TiresController::class, 'apicall'])->name('tires.api.index');
+    Route::get('tires/{id}', [TiresController::class, 'singleTicketapicall']);
     Route::get('products', [ProductController::class, 'apicall'])->name('products.api.index');
+    Route::get('products/{id}', [ProductController::class, 'singleTicketapicall']);
 
     Route::post('register', [AuthController::class, 'store'])->middleware('throttle:5,1');
     Route::post('login',    [AuthController::class, 'login'])->middleware('throttle:5,1');
