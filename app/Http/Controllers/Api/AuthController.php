@@ -144,7 +144,7 @@ class AuthController extends Controller
     public function sendResetOtp(Request $request): JsonResponse
     {
         $request->validate([
-            'mobile' => ['required', 'string', 'max:20'],
+            'mobile' => ['required', 'regex:/^(0|\+92|92|3)[0-9]{9,10}$/', 'max:20'],
         ]);
 
         $raw  = preg_replace('/\D+/', '', $request->mobile);
@@ -192,7 +192,7 @@ class AuthController extends Controller
     public function resetPassword(Request $request): JsonResponse
     {
         $request->validate([
-            'mobile'   => ['required', 'string', 'max:20'],
+            'mobile'   => ['required', 'regex:/^(0|\+92|92|3)[0-9]{9,10}$/', 'max:20'],
             'otp'      => ['required', 'digits:6'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
@@ -264,7 +264,7 @@ class AuthController extends Controller
 
         $data = $request->validate([
             'name'   => ['sometimes', 'string', 'max:255'],
-            'mobile' => ['sometimes', 'string', 'max:20', 'unique:users,mobile,' . $user->id],
+            'mobile' => ['sometimes', 'regex:/^(0|\+92|92|3)[0-9]{9,10}$/', 'unique:users,mobile,' . $user->id],
             'email'  => ['sometimes', 'email', 'unique:users,email,' . $user->id],
         ]);
 
