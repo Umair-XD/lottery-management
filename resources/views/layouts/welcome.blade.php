@@ -14,7 +14,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Figtree:ital,wght@0,300..900;1,300..900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Figtree:ital,wght@0,300..900;1,300..900&family=Jost:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -33,16 +35,6 @@
 
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-white">
-        {{-- @include('layouts.navigation') --}}
-
-        <!-- Page Heading -->
-        {{-- @isset($header)
-            <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
-                </div>
-            </header>
-        @endisset --}}
 
         {{-- 1) STICKY NAVBAR --}}
         <nav class="sticky top-0 z-50 bg-white shadow flex items-center justify-between px-4 lg:px-14 py-2">
@@ -65,10 +57,18 @@
                 </a>
             </div>
 
-            <!-- Mobile “Sign In” -->
-            <a href="{{ route('login') }}" class="md:hidden text-center bg-[#FDC741] py-2 px-4 rounded font-semibold">
-                Sign In
-            </a>
+            @guest
+                <!-- Mobile “Sign In” -->
+                <a href="{{ route('login') }}" class="md:hidden text-center bg-[#FDC741] py-2 px-4 rounded font-semibold">
+                    Sign In
+                </a>
+            @endguest
+            @auth
+                <a href="{{ route('profile.edit') }}">
+                    <img src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                        class="w-8 h-8 md:hidden rounded-full border border-white" alt="Profile">
+                </a>
+            @endauth
 
             <!-- Desktop Links & Buttons -->
             <div class="hidden md:flex md:items-center space-x-5 lg:space-x-28">
@@ -102,7 +102,7 @@
                     </a>
                 </div>
 
-                <div class="login-btns flex space-x-3">
+                {{-- <div class="login-btns flex space-x-3">
                     <a href="{{ route('login') }}" class="bg-[#FDC741] font-semibold px-6 py-1 rounded">
                         Sign In
                     </a>
@@ -110,7 +110,48 @@
                         class="border border-[#FDC741] text-[#FDC741] font-semibold px-6 py-1 rounded">
                         Register
                     </a>
+                </div> --}}
+                <div class="login-btns flex space-x-3">
+                    @guest
+                        <!-- Show Sign In / Register if NOT logged in -->
+                        <a href="{{ route('login') }}" class="bg-[#FDC741] font-semibold px-6 py-1 rounded">
+                            Sign In
+                        </a>
+                        <a href="{{ route('register') }}"
+                            class="border border-[#FDC741] text-[#FDC741] font-semibold px-6 py-1 rounded">
+                            Register
+                        </a>
+                    @endguest
+
+                    @auth
+                        <!-- Show Profile Dropdown if logged in -->
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" class="flex items-center space-x-2 font-semibold">
+                                <img src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                                    class="w-8 h-8 rounded-full border border-white" alt="Profile">
+                                <span>{{ Auth::user()->name }}</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+
+                            <div x-show="open" @click.away="open = false"
+                                class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg py-2 z-50">
+                                <a href="{{ route('profile.edit') }}" class="block px-4 py-2 hover:bg-gray-100">
+                                    Profile
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endauth
                 </div>
+
             </div>
         </nav>
 
@@ -126,11 +167,31 @@
                 <a href="{{ route('users.privacy') }}" class="py-2 font-medium">Privacy Policy</a>
                 <a href="{{ route('users.about') }}" class="py-2 font-medium">About Us</a>
             </nav>
-            <div class="mt-8">
-                <a href="{{ route('register') }}"
-                    class="block w-full text-center border border-[#FDC741] py-2 rounded font-semibold text-[#FDC741]">
-                    Register
-                </a>
+            <div class="mt-8 flex flex-col items-center justify-center">
+                @guest
+                    <a href="{{ route('register') }}"
+                        class="block w-full text-center border border-[#FDC741] py-2 rounded font-semibold text-[#FDC741]">
+                        Register
+                    </a>
+                @endguest
+                @auth
+                    <div class="flex items-center w-full justify-start space-x-2 font-semibold">
+                        <img src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
+                            class="w-8 h-8 rounded-full border border-white" alt="Profile">
+                        <span>{{ Auth::user()->name }}</span>
+                    </div>
+                    <a href="{{ route('profile.edit') }}"
+                        class="mt-3 block w-3/5 text-sm text-center border border-[#FDC741] py-2 rounded font-semibold text-[#FDC741]">
+                        Profile
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="w-full flex justify-center">
+                        @csrf
+                        <button type="submit"
+                            class="text-center mt-1 block w-3/5 text-sm bg-red-600 text-white py-2 rounded font-semibold">
+                            Logout
+                        </button>
+                    </form>
+                @endauth
             </div>
         </div>
 
@@ -166,7 +227,6 @@
                 }
             });
         </script>
-
 
         <!-- Page Content -->
         <main>
