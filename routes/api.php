@@ -9,6 +9,7 @@ use App\Http\Controllers\TiresController;
 Route::prefix('v1')->group(function () {
     Route::get('tires', [TiresController::class, 'apicall'])->name('tires.api.index');
     Route::get('tires/{id}', [TiresController::class, 'singleTicketapicall']);
+    Route::get('/tires/{id}/tickets', [TiresController::class, 'apiTicketShow']);
     Route::get('products', [ProductController::class, 'apicall'])->name('products.api.index');
     Route::get('products/{id}', [ProductController::class, 'singleTicketapicall']);
 
@@ -18,7 +19,10 @@ Route::prefix('v1')->group(function () {
     Route::post('password/forgot', [AuthController::class, 'sendResetOtp'])->middleware('throttle:3,1');
     Route::post('password/reset',  [AuthController::class, 'resetPassword'])->middleware('throttle:3,1');
 
+
     Route::middleware(['auth:sanctum', 'throttle:3,1'])->group(function () {
+        Route::post('password/update', [AuthController::class, 'updatePassword']);
+        Route::post('profile/update',  [AuthController::class, 'updateProfile']);
         Route::post('mobile',        [ApiSmsController::class, 'sendOtp']);
         Route::post('mobile/verify', [ApiSmsController::class, 'verifyOtp']);
         Route::post('logout',        [AuthController::class, 'logout']);

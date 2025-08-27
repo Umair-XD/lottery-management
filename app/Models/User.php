@@ -50,4 +50,30 @@ class User extends Authenticatable
         'password_reset_expires_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function setMobileAttribute($value)
+    {
+        if (! $value) {
+            $this->attributes['mobile'] = null;
+            return;
+        }
+
+        // Strip all non-digits
+        $raw = preg_replace('/\D+/', '', $value);
+
+        if ($raw === '') {
+            $this->attributes['mobile'] = null;
+            return;
+        }
+
+        if (str_starts_with($raw, '0')) {
+            $this->attributes['mobile'] = '+92' . substr($raw, 1);
+        } elseif (str_starts_with($raw, '92') && strlen($raw) >= 11) {
+            $this->attributes['mobile'] = '+' . $raw;
+        } elseif (str_starts_with($raw, '3') && strlen($raw) === 10) {
+            $this->attributes['mobile'] = '+92' . $raw;
+        } else {
+            $this->attributes['mobile'] = null;
+        }
+    }
 }

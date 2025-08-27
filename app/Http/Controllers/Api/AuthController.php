@@ -75,9 +75,15 @@ class AuthController extends Controller
 
         $user = User::where('email', $creds['email'])->first();
 
-        if (! $user || ! Hash::check($creds['password'], $user->password)) {
+        if (! $user) {
             throw ValidationException::withMessages([
-                'email' => ['Invalid credentials.'],
+                'email' => ['This email is not registered.'],
+            ]);
+        }
+
+        if (! Hash::check($creds['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'password' => ['Incorrect password.'],
             ]);
         }
 
@@ -224,5 +230,49 @@ class AuthController extends Controller
             Log::error('Password reset failed', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Password reset failed. Please try again later.'], 500);
         }
+    }
+
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => ['required', 'string'],
+            'password'         => ['required', 'string', 'confirmed', 'min:8'],
+        ]);
+
+        $user = $request->user();
+
+        if (! Hash::check($request->current_password, $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => ['The current password is incorrect.'],
+            ]);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            'message' => 'Password updated successfully.',
+        ]);
+    }
+
+
+    public function updateProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $data = $request->validate([
+            'name'   => ['sometimes', 'string', 'max:255'],
+            'mobile' => ['sometimes', 'string', 'max:20', 'unique:users,mobile,' . $user->id],
+            'email'  => ['sometimes', 'email', 'unique:users,email,' . $user->id],
+        ]);
+
+        $user->update($data);
+
+        return response()->json([
+            'message' => 'Profile updated successfully.',
+            'user'    => $user->only('id', 'name', 'email', 'mobile'),
+        ]);
     }
 }

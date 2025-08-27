@@ -6,6 +6,7 @@ use App\Models\Ticket;
 use App\Models\Tires;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TiresController extends Controller
 {
@@ -50,6 +51,7 @@ class TiresController extends Controller
         // Find the ticket by ID
         $tire = Tires::find($id, [
             'id',
+            'name',
             'bg_color',
             'prize_amount',
             'multiplier',
@@ -62,12 +64,13 @@ class TiresController extends Controller
         }
 
         $ticketData = [
-            'id'            => $tire->id,
-            'bg_color'      => $tire->bg_color,
-            'prize_amount'  => $tire->prize_amount,
-            'multiplier'    => $tire->multiplier,
-            'price'         => $tire->price,
-            'draw_date'     => Carbon::parse($tire->draw_date)->toIso8601String(),
+            'id' => $tire->id,
+            'name' => $tire->name,
+            'bg_color' => $tire->bg_color,
+            'prize_amount' => $tire->prize_amount,
+            'multiplier' => $tire->multiplier,
+            'price' => $tire->price,
+            'draw_date' => Carbon::parse($tire->draw_date)->toIso8601String(),
         ];
 
         return response()->json($ticketData);
@@ -80,14 +83,89 @@ class TiresController extends Controller
 
     public function ticketShow($id)
     {
-        $ticket = Tires::findOrFail($id);
-        $tickets = Ticket::where('tires_id', $id)->where('status', 'active')->whereNull('user_id')->take(3)->get();
+        return DB::transaction(function () use ($id) {
+            // Lock tire row so two requests don’t mess pointer at same time
+            $tire = Tires::lockForUpdate()->findOrFail($id);
 
-        return view('ticket.show', [
-            'ticket'  => $ticket,
-            'tickets' => $tickets,
+            // Start query from the last pointer
+            $query = Ticket::where('tires_id', $id)
+                ->where('status', 'active')
+                ->whereNull('user_id')
+                ->orderBy('id');
+
+            if ($tire->last_ticket_id) {
+                $query->where('id', '>', $tire->last_ticket_id);
+            }
+
+            $tickets = $query->take(3)->get();
+
+            // If not enough, wrap around from the start
+            if ($tickets->count() < 3) {
+                $remaining = 3 - $tickets->count();
+                $wrap = Ticket::where('tires_id', $id)
+                    ->where('status', 'active')
+                    ->whereNull('user_id')
+                    ->orderBy('id')
+                    ->take($remaining)
+                    ->get();
+
+                $tickets = $tickets->merge($wrap);
+            }
+
+            // Move the pointer to the last shown ticket
+            if ($tickets->isNotEmpty()) {
+                $tire->last_ticket_id = $tickets->last()->id;
+                $tire->save();
+            }
+
+            return view('ticket.show', [
+                'ticket'  => $tire,
+                'tickets' => $tickets,
+            ]);
+        });
+    }
+    public function apiTicketShow($id)
+    {
+        $tires = Tires::findOrFail($id);
+
+        // Start query for active tickets
+        $query = Ticket::where('tires_id', $id)
+            ->where('status', 'active')
+            ->orderBy('id');
+
+        // If last_ticket_id exists, start AFTER it
+        if ($tires->last_ticket_id) {
+            $query->where('id', '>', $tires->last_ticket_id);
+        }
+
+        $tickets = $query->take(3)->get();
+
+        // If not enough tickets found → wrap from start
+        if ($tickets->count() < 3) {
+            $needed = 3 - $tickets->count();
+
+            $wrapTickets = Ticket::where('tires_id', $id)
+                ->where('status', 'active')
+                ->orderBy('id')
+                ->take($needed)
+                ->get();
+
+            $tickets = $tickets->merge($wrapTickets);
+        }
+
+        // Update pointer (set last_ticket_id to last returned ticket)
+        if ($tickets->isNotEmpty()) {
+            $tires->update([
+                'last_ticket_id' => $tickets->last()->id
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data'    => $tickets
         ]);
     }
+
 
     public function store(Request $request)
     {

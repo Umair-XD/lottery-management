@@ -10,9 +10,9 @@ class CreateTiresTable extends Migration
     {
         Schema::create('tires', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('last_ticket_id')->nullable();
             $table->string('name')->unique();
             $table->unsignedInteger('price');
-
             // carousel/ticket metadata
             $table->unsignedBigInteger('prize_amount')->comment('Total prize for this tier');
             $table->unsignedInteger('multiplier')->comment('Prize multiplier');
