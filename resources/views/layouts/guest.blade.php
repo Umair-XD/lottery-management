@@ -21,13 +21,61 @@
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
-    <div class="min-h-screen flex flex-col items-center bg-white lg:flex-row">
-        <div class="bg-blue-900 w-full flex items-center justify-center h-40 lg:h-[98vh] lg:m-2">
-            <a href="/">
-                <x-application-logo class="w-32 h-32 md:w-36 md:h-36 fill-current text-gray-500" />
-            </a>
-        </div>
-        <div class="w-full mt-6 px-6 py-4 overflow-hidden sm:rounded-lg">
+    <div class="min-h-screen relative overflow-hidden">
+        <!-- Logo -->
+        <a href="{{ route('users.index') }}" class="absolute top-4 left-5 z-20">
+            <x-application-logo class="w-16 h-16 md:w-24 md:h-24 fill-current text-gray-500" />
+        </a>
+
+        <!-- Top Right SVG -->
+        <svg aria-hidden="true" class="absolute top-0 right-0 w-4/5 sm:w-2/3 lg:w-1/2 h-auto z-0" viewBox="0 0 872 728"
+            xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" shape-rendering="crispEdges">
+            <g filter="url(#filter0_d_403_973)">
+                <path
+                    d="M265 134C129.4 146.8 37.1667 46 8 -6L872 -2.5V715.5H775.5C476.7 677.5 527 526 589.5 455C626 405.167 692 285.1 664 203.5C629 101.5 434.5 118 265 134Z"
+                    fill="#0D2657" fill-opacity="0.01" />
+            </g>
+            <defs>
+                <filter id="filter0_d_403_973" x="0" y="-10" width="880" height="737.5" filterUnits="userSpaceOnUse"
+                    color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="0" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_403_973" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_403_973" result="shape" />
+                </filter>
+            </defs>
+        </svg>
+
+        <!-- Bottom Left SVG -->
+        <svg aria-hidden="true" class="absolute bottom-0 left-0 w-3/4 sm:w-1/2 lg:w-4/12 h-auto z-0"
+            viewBox="0 0 580 491" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMaxYMax meet"
+            shape-rendering="crispEdges">
+            <g filter="url(#filter0_d_403_975)">
+                <path
+                    d="M403.405 389.458C493.523 380.951 554.82 447.941 574.204 482.5L0 480.174V3H64.1327C262.711 28.2543 229.283 128.939 187.746 176.125C163.489 209.244 119.626 289.039 138.234 343.269C161.495 411.057 290.757 400.091 403.405 389.458Z"
+                    fill="#0D2657" fill-opacity="0.02" />
+            </g>
+            <defs>
+                <filter id="filter0_d_403_975" x="-5.3167" y="0.341649" width="584.837" height="490.133"
+                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+                        result="hardAlpha" />
+                    <feOffset dy="2.65835" />
+                    <feGaussianBlur stdDeviation="0" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.04 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_403_975" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_403_975" result="shape" />
+                </filter>
+            </defs>
+        </svg>
+
+        <!-- Page Content -->
+        <div class="relative z-10 w-full h-screen flex items-center justify-center">
             {{ $slot }}
         </div>
     </div>
