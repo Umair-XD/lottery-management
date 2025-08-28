@@ -26,6 +26,7 @@ class TiresController extends Controller
             ->orderBy('draw_date', 'asc')
             ->get([
                 'id',
+                'name',
                 'bg_color',
                 'prize_amount',
                 'multiplier',
@@ -35,6 +36,7 @@ class TiresController extends Controller
             ->map(function ($tire) {
                 return [
                     'id'            => $tire->id,
+                    'name'          => $tire->name,
                     'bg_color'      => $tire->bg_color,
                     'prize_amount'  => $tire->prize_amount,
                     'multiplier'    => $tire->multiplier,
