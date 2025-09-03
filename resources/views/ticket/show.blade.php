@@ -249,11 +249,91 @@
 
             {{-- PRIZES --}}
             <template x-if="activeTab === 'prizes'">
-                <div>
-                    <h2 class="text-lg font-bold mb-4">Prizes</h2>
-                    <p class="text-gray-700 text-center">🏆 Show prize structure...</p>
+                <div class="flex flex-wrap justify-center items-center gap-6 p-4">
+                    <div
+                        class="w-full sm:w-80 md:w-96 bg-[#21366F] rounded-2xl overflow-hidden shadow-[3.75px_3.75px_3.75px_rgba(0,0,0,0.25),-4px_-4px_4px_rgba(0,0,0,0.15)]">
+                        <!-- White Top Section -->
+                        <div class="relative flex flex-col items-center justify-center">
+                            <img class="w-full" src="{{ asset('assets/trophy.svg') }}" alt="Trophy">
+
+                            <h2 class="text-4xl font-medium mt-7 text-[#FDC741] uppercase">PLATINUM</h2>
+
+                            <div
+                                class="flex justify-center space-x-3 mt-6 [&>*]:h-12 [&>*]:w-12 [&>*]:bg-white [&>*]:text-2xl [&>*]:font-medium [&>*]:text-[#21366F] [&>*]:rounded-full">
+                                <div class="flex items-center justify-center">7</div>
+                                <div class="flex items-center justify-center">4</div>
+                                <div class="flex items-center justify-center">3</div>
+                                <div class="flex items-center justify-center">9</div>
+                                <div class="flex items-center justify-center">2</div>
+                            </div>
+
+                        </div>
+
+                        <div class="px-6 py-8 text-center text-white">
+                            <p class="text-2xl font-bold">
+                                PKR 500
+                                <span class="text-sm font-medium">× 70</span>
+                            </p>
+                            <p class="mt-1 text-gray-300">Every Month</p>
+                        </div>
+                    </div>
+                    <div
+                        class="w-full sm:w-80 md:w-96 bg-[#21366F] rounded-2xl overflow-hidden shadow-[3.75px_3.75px_3.75px_rgba(0,0,0,0.25),-4px_-4px_4px_rgba(0,0,0,0.15)]">
+                        <!-- White Top Section -->
+                        <div class="relative flex flex-col items-center justify-center">
+                            <img class="w-full" src="{{ asset('assets/trophy.svg') }}" alt="Trophy">
+
+                            <h2 class="text-4xl font-medium mt-7 text-[#FDC741] uppercase">GOLD</h2>
+
+                            <div
+                                class="flex justify-center space-x-3 mt-6 [&>*]:h-12 [&>*]:w-12 [&>*]:bg-white [&>*]:text-2xl [&>*]:font-medium [&>*]:text-[#21366F] [&>*]:rounded-full">
+                                <div class="flex items-center justify-center">2</div>
+                                <div class="flex items-center justify-center">5</div>
+                                <div class="flex items-center justify-center">9</div>
+                                <div class="flex items-center justify-center">6</div>
+                                <div class="flex items-center justify-center">3</div>
+                            </div>
+
+                        </div>
+
+                        <div class="px-6 py-8 text-center text-white">
+                            <p class="text-2xl font-bold">
+                                PKR 200
+                                <span class="text-sm font-medium">× 40</span>
+                            </p>
+                            <p class="mt-1 text-gray-300">Every Month</p>
+                        </div>
+                    </div>
+                    <div
+                        class="w-full sm:w-80 md:w-96 bg-[#21366F] rounded-2xl overflow-hidden shadow-[3.75px_3.75px_3.75px_rgba(0,0,0,0.25),-4px_-4px_4px_rgba(0,0,0,0.15)]">
+                        <!-- White Top Section -->
+                        <div class="relative flex flex-col items-center justify-center">
+                            <img class="w-full" src="{{ asset('assets/trophy.svg') }}" alt="Trophy">
+
+                            <h2 class="text-4xl font-medium mt-7 text-[#FDC741] uppercase">DAIMOND</h2>
+
+                            <div
+                                class="flex justify-center space-x-3 mt-6 [&>*]:h-12 [&>*]:w-12 [&>*]:bg-white [&>*]:text-2xl [&>*]:font-medium [&>*]:text-[#21366F] [&>*]:rounded-full">
+                                <div class="flex items-center justify-center">5</div>
+                                <div class="flex items-center justify-center">6</div>
+                                <div class="flex items-center justify-center">9</div>
+                                <div class="flex items-center justify-center">2</div>
+                                <div class="flex items-center justify-center">1</div>
+                            </div>
+
+                        </div>
+
+                        <div class="px-6 py-8 text-center text-white">
+                            <p class="text-2xl font-bold">
+                                PKR 1000
+                                <span class="text-sm font-medium">× 50</span>
+                            </p>
+                            <p class="mt-1 text-gray-300">Every Month</p>
+                        </div>
+                    </div>
                 </div>
             </template>
+
 
             {{-- PAST RESULTS --}}
             <template x-if="activeTab === 'results'">
