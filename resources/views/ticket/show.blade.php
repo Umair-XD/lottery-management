@@ -84,7 +84,10 @@
     </div>
 
     {{-- NAVIGATION + BREADCRUMB + CONTENT (single Alpine scope) --}}
-    <div x-data="{ activeTab: 'buy', open: false }" class="w-full">
+    <div x-data="{
+        activeTab: window.location.hash.replace('#', '') || 'buy',
+        open: false
+    }" class="w-full">
 
         {{-- DESKTOP TABS --}}
         <div class="hidden md:flex items-center justify-center text-base font-medium text-white py-3"
@@ -94,14 +97,14 @@
                     { key: 'buy', label: 'BUY NOW' },
                     { key: 'how', label: 'HOW TO PLAY' },
                     { key: 'prizes', label: 'PRIZES' },
-                    { key: 'results', label: 'PAST RESULTS' }
+                    { key: 'winners', label: 'WINNERS' }
                 ]"
                 :key="tab.key">
                 <div class="flex items-center">
                     <button @click="activeTab=tab.key"
                         :class="activeTab === tab.key ? 'opacity-100 font-bold' : 'opacity-70 hover:opacity-100'"
                         class="px-4" x-text="tab.label"></button>
-                    <span x-show="tab.key!=='results'" class="h-6 border-l-2 border-white mx-2"></span>
+                    <span x-show="tab.key!=='winners'" class="h-6 border-l-2 border-white mx-2"></span>
                 </div>
             </template>
         </div>
@@ -112,7 +115,7 @@
                 <span
                     x-text="activeTab==='buy' ? 'BUY NOW' :
                           activeTab==='how' ? 'HOW TO PLAY' :
-                          activeTab==='prizes' ? 'PRIZES' : 'PAST RESULTS'"></span>
+                          activeTab==='prizes' ? 'PRIZES' : 'WINNERS'"></span>
                 <svg :class="{ 'rotate-180': open }" class="w-4 h-4 ml-2 transition-transform" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -127,7 +130,7 @@
                     { key: 'buy', label: 'BUY NOW' },
                     { key: 'how', label: 'HOW TO PLAY' },
                     { key: 'prizes', label: 'PRIZES' },
-                    { key: 'results', label: 'PAST RESULTS' }
+                    { key: 'winners', label: 'WINNERS' }
                 ]"
                         :key="tab.key">
                         <li>
@@ -149,12 +152,12 @@
                 <span class="text-[#1083E5]">Games</span>
                 <span>/</span>
                 <span class="text-[#1083E5]"
-                    x-text="activeTab === 'buy' ? 'Buy Now' : (activeTab === 'how' ? 'How to Play' : (activeTab === 'prizes' ? 'Prizes' : 'Past Results'))">
+                    x-text="activeTab === 'buy' ? 'Buy Now' : (activeTab === 'how' ? 'How to Play' : (activeTab === 'prizes' ? 'Prizes' : 'Winners'))">
                 </span>
             </nav>
 
             <h1 class="text-xl sm:text-3xl md:text-[45px] font-medium text-center mt-3"
-                x-text="activeTab === 'buy' ? 'Buy Now' : (activeTab === 'how' ? 'How to Play' : (activeTab === 'prizes' ? 'Prizes' : 'Past Results'))">
+                x-text="activeTab === 'buy' ? 'Buy Now' : (activeTab === 'how' ? 'How to Play' : (activeTab === 'prizes' ? 'Prizes' : 'Winners'))">
             </h1>
         </div>
 
@@ -335,11 +338,10 @@
             </template>
 
 
-            {{-- PAST RESULTS --}}
-            <template x-if="activeTab === 'results'">
+            {{-- WINNERS --}}
+            <template x-if="activeTab === 'winners'">
                 <div>
-                    <h2 class="text-lg font-bold mb-4">Past Results</h2>
-                    <p class="text-gray-700 text-center">📊 Display results table...</p>
+                    <p class="text-gray-700 text-center">No Winners Found.</p>
                 </div>
             </template>
         </div>

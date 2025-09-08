@@ -7,6 +7,7 @@ use App\Models\Tires;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class TiresController extends Controller
 {
@@ -125,6 +126,11 @@ class TiresController extends Controller
                 'tickets' => $tickets,
             ]);
         });
+    }
+    public function ticketName()
+    {
+        $tires = Tires::where('draw_date', '>', now())->select('id', 'name', 'bg_color')->get();
+        return response()->json($tires);
     }
     public function apiTicketShow($id)
     {

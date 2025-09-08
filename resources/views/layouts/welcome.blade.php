@@ -72,13 +72,40 @@
 
             <!-- Desktop Links & Buttons -->
             <div class="hidden md:flex md:items-center space-x-5 lg:space-x-28">
-                <div class="nav-links flex items-center text-base font-medium text-[#808080]">
-                    <a href="{{ route('users.index') }}" @class([
+                <div class="nav-links relative flex items-center text-base font-medium text-[#808080]">
+                    {{-- <a href="{{ route('users.index') }}" @class([
                         'px-3 py-1 hover:text-black',
                         'text-black border-b-2 border-black' => request()->routeIs('users.index'),
                     ])>
                         Games
-                    </a>
+                    </a> --}}
+
+                    <!-- Games with dropdown -->
+                    <div x-data="{ open: false, tickets: [] }" x-init="fetch('/api/v1/tires/names')
+                        .then(res => res.json())
+                        .then(data => tickets = data)" class="relative">
+
+                        <!-- Trigger -->
+                        <a href="#" @mouseenter="open = true" @mouseleave="open = false"
+                            class="px-3 py-1 hover:text-black flex items-center space-x-1">
+                            <span>Games</span>
+                        </a>
+
+                        <!-- Dropdown -->
+                        <div x-show="open" @mouseenter="open = true" @mouseleave="open = false"
+                            class="absolute max-w-[60vw] left-1/2 transform -translate-x-1/2 bg-white shadow-lg rounded-lg p-4 flex justify-center gap-4 z-50">
+
+                            <template x-for="ticket in tickets" :key="ticket.id">
+                                <a :href="`/ticket/cart/${ticket.id}#buy`"
+                                    class="p-4 border flex flex-col justify-center items-center w-36 sm:w-40 md:w-44 h-20 rounded-xl shadow hover:shadow-lg transition"
+                                    :style="`background-color: ${ticket.bg_color || '#f8f8f8'};`">
+                                    <h3 class="font-semibold text-white text-center" x-text="ticket.name"></h3>
+                                    <p class="text-sm text-gray-200 mt-1">Click to view</p>
+                                </a>
+                            </template>
+                        </div>
+                    </div>
+
                     <span class="h-6 border-l-2 border-black mx-2"></span>
                     <a href="{{ route('users.giving') }}" @class([
                         'px-3 py-1  hover:text-black',
@@ -157,9 +184,67 @@
 
         {{-- 2) MOBILE MENU --}}
         <div id="mobile-menu"
-            class="absolute inset-x-0 top-16 bg-white p-6 transform -translate-y-full transition-transform duration-300 ease-in-out md:hidden z-40 shadow-lg">
+            class="fixed inset-x-0 top-16 bg-white p-6 transform -translate-y-full transition-transform duration-300 ease-in-out md:hidden z-40 shadow-lg">
             <nav class="flex flex-col space-y-4">
-                <a href="{{ route('users.index') }}" class="py-2 font-medium">Games</a>
+                {{-- <a href="{{ route('users.index') }}" class="py-2 font-medium">Games</a> --}}
+
+                <!-- Games collapsible -->
+                <div x-data="{ open: false, subcategories: [] }" x-init="fetch('/api/v1/tires/names')
+                    .then(res => res.json())
+                    .then(data => subcategories = data)" class="w-full">
+
+                    <!-- Main Games button -->
+                    <button @click="open = !open"
+                        class="w-full text-left py-2 font-medium flex justify-between items-center">
+                        Games
+                        <svg :class="open ? 'rotate-0' : '-rotate-90'"
+                            class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <!-- Subcategories -->
+                    <div x-show="open" x-collapse class="pl-4 mt-2 space-y-2 overflow-hidden">
+                        <template x-for="sub in subcategories" :key="sub.id">
+                            <div x-data="{ subOpen: false }">
+                                <!-- Subcategory heading -->
+                                <button @click="subOpen = !subOpen"
+                                    class="w-full flex justify-between items-center py-1 font-semibold text-gray-700">
+                                    <span x-text="sub.name"></span>
+                                    <svg :class="subOpen ? 'rotate-0' : '-rotate-90'"
+                                        class="w-3 h-3 transition-transform duration-300" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </button>
+
+                                <!-- Sub-subcategories -->
+                                <div x-show="subOpen" x-collapse
+                                    class="pl-4 mt-1 space-y-1 text-sm text-gray-600 overflow-hidden">
+                                    <a :href="`/ticket/cart/${sub.id}#buy`" class="block hover:text-black">
+                                        Buy Now
+                                    </a>
+
+                                    <a :href="`/ticket/cart/${sub.id}#how`" class="block hover:text-black">
+                                        How To Play
+                                    </a>
+
+                                    <a :href="`/ticket/cart/${sub.id}#prizes`" class="block hover:text-black">
+                                        Prizes
+                                    </a>
+
+                                    <a :href="`/ticket/cart/${sub.id}#winners`" class="block hover:text-black">
+                                        Winners
+                                    </a>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
                 <a href="{{ route('users.giving') }}" class="py-2 font-medium">Giving Back</a>
                 <a href="{{ route('users.faq') }}" class="py-2 font-medium">FAQ’s</a>
                 <a href="{{ route('users.rules') }}" class="py-2 font-medium">Rules</a>

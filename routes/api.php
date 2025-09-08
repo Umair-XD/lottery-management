@@ -8,8 +8,9 @@ use App\Http\Controllers\TiresController;
 
 Route::prefix('v1')->group(function () {
     Route::get('tires', [TiresController::class, 'apicall'])->name('tires.api.index');
+    Route::get('tires/names', [TiresController::class, 'ticketName']);
     Route::get('tires/{id}', [TiresController::class, 'singleTicketapicall']);
-    Route::get('/tires/{id}/tickets', [TiresController::class, 'apiTicketShow']);
+    Route::get('tires/{id}/tickets', [TiresController::class, 'apiTicketShow']);
     Route::get('products', [ProductController::class, 'apicall'])->name('products.api.index');
     Route::get('products/{id}', [ProductController::class, 'singleTicketapicall']);
 
